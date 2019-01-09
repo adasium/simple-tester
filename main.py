@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from enum import Enum
+from enum import Enum, EnumMeta
 import random
 
+class RANDOM_ATTR(EnumMeta):
+    @property
+    def RANDOM(self):
+        return random.choice([Dict.german, Dict.polish]).value
 
-class dict(Enum):
+class Dict(Enum, metaclass=RANDOM_ATTR):
     polish = 0
     german = 1
+
+
 
 
 class Points:
@@ -25,9 +31,9 @@ class Points:
 
     def __str__(self):
         return (
-            '{} odpowiedzi poprawnych'.format(self.correct) +
-            '{} odpowiedzi błędnych'.format(self.incorrect) +
-            'Skuteczność: {}%'.format(self.correct/self.total)
+            '{} odpowiedzi poprawnych\n'.format(self.correct) +
+            '{} odpowiedzi błędnych\n'.format(self.incorrect) +
+            '\nSkuteczność: {}%'.format(100*self.correct/self.total)
         )
 
 
@@ -41,18 +47,25 @@ class Program:
         self.load_database()
         self.generate_test()
         self.solve_test()
+        self.show_results()
 
     def show_results(self):
+        print()
+        print('=== WYNIKI ===')
         print(self.points)
 
     def solve_test(self):
-        for question, answer in self.test_words:
+        for test_question in self.test_words:
+            from_lang = Dict.RANDOM
+            to_lang = Dict.german.value if from_lang == Dict.polish.value else Dict.polish.value
+            question = test_question[from_lang]
+            answer = test_question[to_lang]
             user_answer = input(question + ' - ')
             if user_answer == answer:
                 print('Brawo!')
                 self.points.good_ans()
             else:
-                print('Jesteś dupa.')
+                print('Jesteś dupa. Prawidłowa odpowiedź to: {}'.format(answer))
                 self.points.bad_ans()
 
     def generate_test(self):
