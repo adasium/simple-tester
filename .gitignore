@@ -1,0 +1,8 @@
+dist
+build
+__pycache__
+
+*.dat
+*.swp
+
+setup.py
