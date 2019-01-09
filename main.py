@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from enum import Enum, EnumMeta
 import random
+import os
 
 class RANDOM_ATTR(EnumMeta):
     @property
@@ -48,6 +49,9 @@ class Program:
         self.generate_test()
         self.solve_test()
         self.show_results()
+
+        if os.name == 'nt':
+            os.system('pause')
 
     def show_results(self):
         print()
