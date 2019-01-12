@@ -31,10 +31,9 @@ class Database:
                         'value': []
                     }
                     for line in f:
-                        split_line = [x.lstrip(' ').rstrip(' ')
-                                      for x in line.strip('\n').split('-')]
+                        split_line = [x.strip(' ') for x in line.strip('\n').split('-')]
                         self.dictionary[filename]['value'].append(
-                            tuple(split_line))
+                            Question(*split_line))
                         self.count += 1
         else:
             os.makedirs(self.word_bank_dir)
@@ -56,6 +55,19 @@ class Database:
 
         return random.sample(all_words, size)
 
+class Question:
+    def __init__(self, question, answer):
+        self.question = question
+        self.answer = answer
+
+    def get_question(self):
+        return self.question
+
+    def get_answer(self):
+        return self.answer
+
+    def invert(self):
+        return Question(self.answer, self.question)
 
 class Points:
     def __init__(self):
@@ -104,20 +116,24 @@ class Program:
 
     def solve_test(self, test):
         for test_question in test:
-            #from_lang = Dict.RANDOM
-            #to_lang = Dict.german.value if from_lang == Dict.polish.value else Dict.polish.value
-            from_lang = 0
-            to_lang = 1
+            try:
 
-            question = test_question[from_lang]
-            answer = test_question[to_lang]
-            user_answer = input(question + ' - ')
-            if user_answer == answer:
-                print('  Brawo!')
-                self.points.good_ans()
-            else:
-                print('Jesteś dupa. Prawidłowa odpowiedź to: {}'.format(answer))
-                self.points.bad_ans()
+                #from_lang = Dict.RANDOM
+                #to_lang = Dict.german.value if from_lang == Dict.polish.value else Dict.polish.value
+                from_lang = 0
+                to_lang = 1
+
+                question = test_question.get_question()
+                answer = test_question.get_answer()
+                user_answer = input(question + ' - ')
+                if user_answer == answer:
+                    print('  Brawo!')
+                    self.points.good_ans()
+                else:
+                    print('Jesteś dupa. Prawidłowa odpowiedź to: {}'.format(answer))
+                    self.points.bad_ans()
+            except KeyboardInterrupt:
+                return
 
     def get_test_preferences(self):
         all_categories = list(self.db.dictionary.keys())
