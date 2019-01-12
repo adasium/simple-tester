@@ -1,8 +1,10 @@
-dist
-build
-__pycache__
+dist/
+build/
+__pycache__/
+slownictwo/
 
 *.dat
 *.swp
 
 setup.py
+tags
