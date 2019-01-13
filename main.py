@@ -30,8 +30,8 @@ class Points:
         self.total = 1 if self.total == 0 else self.total
         return (
             '{} odpowiedzi poprawnych\n'.format(self.correct) +
-            '{} odpowiedzi błędnych\n'.format(self.incorrect) +
-            '\nSkuteczność: {}%'.format(100*self.correct/self.total)
+            '{} odpowiedzi blednych\n'.format(self.incorrect) +
+            '\nSkutecznosc: {}%'.format(100*self.correct/self.total)
         )
 
 
@@ -51,8 +51,8 @@ class Program:
             self.show_results()
 
         except CouldNotLoadDatabaseException:
-            print('W katalogu "slownictwo" nie znaleziono żadnego pliku ze słownictwem.')
-            print('Stwórz plik i spróbuj jeszcze raz.')
+            print('W katalogu "slownictwo" nie znaleziono zadnego pliku ze slownictwem.')
+            print('Stworz plik i sprobuj jeszcze raz.')
 
         if os.name == 'nt':
             os.system('pause')
@@ -61,7 +61,7 @@ class Program:
         all_categories = self.db.get_categories()
         chosen_categories = []
 
-        print('Dostępne kategorie: ')
+        print('Dostepne kategorie: ')
         for i, cat in enumerate(all_categories):
             print('   {}. {}'.format(i, cat.get_title()))
 
@@ -105,7 +105,7 @@ class Program:
                     print('  Brawo!')
                     self.points.good_ans()
                 else:
-                    print('Jesteś dupa. Prawidłowa odpowiedź to: {}'.format(answer))
+                    print('Jestes dupa. Prawidlowa odpowiedz to: {}'.format(answer))
                     self.points.bad_ans()
             except KeyboardInterrupt:
                 return
