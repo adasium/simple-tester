@@ -12,6 +12,9 @@ class CustomQTreeWidgetItem(QTreeWidgetItem):
         super().__init__(parent, *args, **kwargs)
         self.path = path
 
+    def is_checked(self):
+        return self.checkState(0) == Qt.CheckState.Checked
+
     def get_path(self):
         return self.path
 
@@ -52,7 +55,6 @@ class App(QWidget):
         self.show()
 
     def fill_tree_view(self, tree, path):
-        print(path)
         directory = os.fsencode(path)
         for file in os.listdir(directory):
             filename = os.fsdecode(file)
@@ -68,8 +70,9 @@ class App(QWidget):
                 self.fill_tree_view(new_item, f'{path}/{filename}')
 
     def load_database(self):
+        print('database loaded')
         self.database = Database(self.tree)
-        self.database.load_database()
+        self.database.print_all()
 
 
 

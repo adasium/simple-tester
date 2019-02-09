@@ -16,3 +16,6 @@ class Question:
     def get_inverted(self):
         new_dest = 'niemiecki' if self.dest == 'polski' else 'polski'
         return Question(self.answer, self.question, new_dest)
+
+    def __str__(self):
+        return f'{self.question} - {self.answer}'
