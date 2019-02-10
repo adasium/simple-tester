@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import random
 from PyQt5.QtCore import Qt
 from question import Question
+
 class CouldNotLoadDatabaseException(Exception):
     pass
 
 class Database:
-    def __init__(self, tree_widget):
+    def __init__(self, tree_widget, *args, **kwargs):
         self.questions = []
+        self.order = kwargs.get('order', None)
+        print(self.order)
         root = tree_widget.invisibleRootItem()
         self.__load_directory(root)
 
@@ -41,3 +45,9 @@ class Database:
     def get_size(self):
         return len(self.questions)
 
+    def get_questions(self):
+        questions = self.questions
+        if self.order == 'random':
+           random.shuffle(questions)
+           return questions
+        return self.questions
