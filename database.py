@@ -4,6 +4,7 @@
 import random
 from PyQt5.QtCore import Qt
 from question import Question
+from custom_widgets import ScoreQLabel
 
 enc = ['windows-1250', 'utf-8']
 
