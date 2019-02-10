@@ -12,6 +12,9 @@ class Score:
         self.incorrect += 1
         self.total += 1
 
+    def get_percentage(self):
+        return self.correct*100/self.total if self.total != 0 else 0
+
     def __str__(self):
         self.total = 1 if self.total == 0 else self.total
         return (

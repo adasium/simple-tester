@@ -5,6 +5,8 @@ import random
 from PyQt5.QtCore import Qt
 from question import Question
 
+enc = ['windows-1250', 'utf-8']
+
 class CouldNotLoadDatabaseException(Exception):
     pass
 
@@ -22,7 +24,7 @@ class Database:
 
     def __load_directory(self, tree_item):
         if tree_item.childCount() == 0 and tree_item.is_checked():
-            with open(tree_item.get_path(), 'r', encoding='windows-1250') as f:
+            with open(tree_item.get_path(), 'r', encoding=enc[1]) as f:
                 title = f.readline().strip('\n')
                 for line in f:
                     try:
