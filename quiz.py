@@ -35,3 +35,6 @@ class Quiz:
 
     def is_answer_correct(self, answer):
         return answer == self.get_current_question().get_answer()
+
+    def is_finished(self):
+        return self._current_index >= self.question_count()

@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-from custom_widgets import CustomQTextEdit, ScoreQLabel, color_str
+from custom_widgets import CustomQTextEdit, ScoreQLabel, color_str, QElapsedTimerWidget
 from quiz import Quiz
 
 
@@ -15,6 +15,9 @@ class QuizWidget(QWidget):
         self.setFixedSize(self.size())
         self._database = database
         self._order = order
+        self._timer = QElapsedTimerWidget()
+        self._timer.start()
+        # self._timer.update()
 
         self._l_question = QLabel()
         self._te_logs = QTextEdit()
@@ -23,7 +26,6 @@ class QuizWidget(QWidget):
         self.__update_database()
 
     def __update_database(self):
-        # print(self._database.get_questions())
         self._quiz = Quiz(self._database.get_questions(), self._order)
         self._progress.setMaximum(self._quiz.question_count())
         self._progress.setValue(0)
@@ -46,9 +48,10 @@ class QuizWidget(QWidget):
         layout.addWidget(self._te_logs, 0, 0)
         layout.addWidget(self._l_question, 1, 0)
         layout.addWidget(self._l_score, 0, 1)
+        layout.addWidget(self._timer, 1, 1)
         layout.addWidget(self._te_answer, 2, 0)
-        layout.addWidget(b_submit_answer, 2, 1)
-        layout.addWidget(self._progress, 3, 0, 1, 2)
+        layout.addWidget(b_submit_answer, 3, 1)
+        layout.addWidget(self._progress, 4, 0, 1, 2)
 
         self.setLayout(layout)
 
@@ -59,23 +62,29 @@ class QuizWidget(QWidget):
     def check_answer(self):
         question = self._quiz.get_question()
 
-        if question:
-            answer = self._te_answer.toPlainText()
-            correct_answer = self._quiz.get_answer()
+        if question is None:
+            return
 
-            self._te_logs.append(question + ": " + answer)
-            if answer == correct_answer:
-                string = color_str('Brawo!', 'green')
-                self._l_score.add_correct()
-                self._te_logs.append(string)
-            else:
-                self._te_logs.append(color_str('Jesteś dupa! Prawidłowa odpowiedź to: ', 'red') + correct_answer)
-                self._l_score.add_incorrect()
+        answer = self._te_answer.toPlainText()
+        correct_answer = self._quiz.get_answer()
 
-            self._quiz.next_question()
-            self._progress.setValue(self._quiz.get_question_index())
-            self._l_score.update()
-            self._l_question.setText(self._quiz.get_question())
+        self._te_logs.append(question + ": " + answer)
+        if answer == correct_answer:
+            string = color_str('Brawo!', 'green')
+            self._l_score.add_correct()
+            self._te_logs.append(string)
+        else:
+            self._te_logs.append(color_str('Jesteś dupa! Prawidłowa odpowiedź to: ', 'red') + correct_answer)
+            self._l_score.add_incorrect()
+
+        self._quiz.next_question()
+        self._progress.setValue(self._quiz.get_question_index())
+        self._l_score.update()
+        self._l_question.setText(self._quiz.get_question())
+
+        if self._quiz.is_finished():
+            self._timer.stop()
+
 
     def update_proggress_bar(self):
         val = self._quiz.get_current_question_index()

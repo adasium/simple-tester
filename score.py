@@ -13,7 +13,7 @@ class Score:
         self.total += 1
 
     def get_percentage(self):
-        return self.correct*100/self.total if self.total != 0 else 0
+        return self.correct*100/self.total if self.total != 0.0 else 0.0
 
     def __str__(self):
         total = 1 if self.total == 0 else self.total
@@ -21,5 +21,5 @@ class Score:
         return (
             '{} odpowiedzi poprawnych\n'.format(self.correct) +
             '{} odpowiedzi blednych\n'.format(self.incorrect) +
-            '\nSkutecznosc: {}%'.format(rount(percent, 2))
+            '\nSkutecznosc: {0:.2f}%'.format(percent)
         )

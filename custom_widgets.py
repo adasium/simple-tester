@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QTreeWidgetItem, QTextEdit, QLabel
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QElapsedTimer, QTimer
 from score import Score
 
 
@@ -49,4 +49,32 @@ class ScoreQLabel(QLabel):
         self.score.bad_ans()
 
     def update(self):
-        self.setText('Correct: {}\nIncorrect: {}\nScore: {}%'.format(self.score.correct, self.score.incorrect, self.score.get_percentage()))
+        self.setText('Correct: {}\nIncorrect: {}\nScore: {:.2f}%'.format(self.score.correct, self.score.incorrect, self.score.get_percentage()))
+
+class QElapsedTimerWidget(QLabel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._timer = QElapsedTimer()
+        self._timer.start()
+        self._check_thread_timer = QTimer(self)
+        self._check_thread_timer.setInterval(1) #.5 seconds
+        self._check_thread_timer.timeout.connect(self.update)
+        self.stopped = True
+
+    def start(self):
+        self.stopped = False
+        self._timer.start()
+        self.update()
+
+    def stop(self):
+        self.stopped = True
+
+    def update(self):
+        if not self.stopped:
+            total_milliseconds = self._timer.elapsed()
+
+            minutes = total_milliseconds // 60000
+            seconds = (total_milliseconds - minutes*60000) // 1000
+            milliseconds = total_milliseconds - minutes*60000 - seconds*1000
+            self.setText('{}m {}s {:03d}ms'.format(minutes, seconds, milliseconds))
+            self._check_thread_timer.start()
