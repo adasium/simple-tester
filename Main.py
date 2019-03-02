@@ -30,6 +30,7 @@ class App(QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.setFixedSize(self.size())
         self.tree = QTreeWidget()
+        self.tree.setHeaderLabel('')
 
         # init layout and create widgets
         main_hbox = QHBoxLayout()
