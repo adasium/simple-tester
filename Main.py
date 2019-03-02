@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QApplication, QLabel, QTreeWidget, QTreeWidgetItem, 
 from PyQt5.QtCore import Qt
 from database import Database
 from custom_widgets import CustomQTreeWidgetItem, CustomQTextEdit, ScoreQLabel
-from test_window import TestWidget
+from quiz_window import QuizWidget
 
 
 class App(QWidget):
@@ -69,7 +69,8 @@ class App(QWidget):
 
     def generate_test(self):
         database = self.load_database()
-        self.test_widget = TestWidget(database)
+        order = 'random' if self.r_shuffled.isChecked() else ''
+        self.test_widget = QuizWidget(database, order)
         self.test_widget.show()
 
     def fill_tree_view(self, tree, path):
@@ -81,15 +82,13 @@ class App(QWidget):
 
             new_item = CustomQTreeWidgetItem(tree, absolute_path)
             new_item.setText(0, filename)
-            new_item.setFlags(new_item.flags()
-                              | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
+            new_item.setFlags(new_item.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
             new_item.setCheckState(0, Qt.Unchecked)
             if S_ISDIR(mode):
                 self.fill_tree_view(new_item, f'{path}/{filename}')
 
     def load_database(self):
-        order = 'random' if self.r_shuffled.isChecked() else ''
-        return Database(self.tree, order=order)
+        return Database(self.tree)
 
 
 if __name__ == '__main__':
