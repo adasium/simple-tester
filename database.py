@@ -7,6 +7,7 @@ from question import Question
 from custom_widgets import ScoreQLabel
 
 enc = ['windows-1250', 'utf-8']
+ENC = enc[0]
 
 class CouldNotLoadDatabaseException(Exception):
     pass
@@ -25,14 +26,13 @@ class Database:
 
     def __load_directory(self, tree_item):
         if tree_item.childCount() == 0 and tree_item.is_checked():
-            with open(tree_item.get_path(), 'r', encoding=enc[1]) as f:
+            with open(tree_item.get_path(), 'r', encoding=ENC) as f:
                 title = f.readline().strip('\n')
-                for line in f:
+                for i, line in enumerate(f):
                     try:
-                        split_line = [x.strip(' ')
-                                      for x in line.strip('\n').split('-')]
+                        split_line = [x.strip(' ') for x in line.strip('\n').split('-')]
                         if len(split_line) < 2:
-                            print('Nie mozna bylo sparsowac linii: {}'.format(line))
+                            print('{}:{} / Couldn\'t parse line: {}'.format(f.name, f.fileno(), line))
                             continue
                         self.questions.append(Question(*split_line))
                     except TypeError as e:
