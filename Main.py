@@ -7,7 +7,6 @@ from stat import S_ISDIR, ST_MODE
 from PyQt5.QtWidgets import QApplication, QLabel, QTreeWidget, QTreeWidgetItem, QWidget, QFileSystemModel, QTreeView, QVBoxLayout, QHBoxLayout, QPushButton, QRadioButton, QGridLayout, QTextEdit, QProgressBar
 from PyQt5.QtCore import Qt
 from database import Database
-# from score import Score
 from custom_widgets import CustomQTreeWidgetItem, CustomQTextEdit, ScoreQLabel
 from test_window import TestWidget
 
@@ -20,7 +19,10 @@ class App(QWidget):
         self.top = 10
         self.width = 640
         self.height = 480
+
         self.database = None
+        self.data_path = f'{os.getcwd()}/data'
+
         self.initUI()
 
     def initUI(self):
@@ -33,7 +35,7 @@ class App(QWidget):
         main_hbox = QHBoxLayout()
         vbox = QVBoxLayout()
         vbox2 = QVBoxLayout()
-        self.fill_tree_view(self.tree, f'{os.getcwd()}/data')
+        self.fill_tree_view(self.tree, self.data_path)
 
         # add stuff
         b_load_database = QPushButton('Load database')
@@ -80,7 +82,7 @@ class App(QWidget):
             new_item.setText(0, filename)
             new_item.setFlags(new_item.flags()
                               | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
-            new_item.setCheckState(0, Qt.Checked)
+            new_item.setCheckState(0, Qt.Unchecked)
             if S_ISDIR(mode):
                 self.fill_tree_view(new_item, f'{path}/{filename}')
 
