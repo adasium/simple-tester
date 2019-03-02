@@ -1,21 +1,21 @@
 class Question:
-    def __init__(self, question, answer, dest='polski'):
-        self.question = question
-        self.answer = answer
-        self.dest = dest
+    def __init__(self, q=None, a=None, **kwargs):
+        self._question = q
+        self._answer = a
+        other = kwargs.get('question')
+        if other:
+            self._question = other.get_question()
+            self._answer = other.get_answer()
+
+        self.inverted = kwargs.get('inverted', False)
+        if self.inverted:
+            self._question, self._answer = self._answer, self._question
 
     def get_question(self):
-        return self.question
+        return self._question
 
     def get_answer(self):
-        return self.answer
-
-    def dest_lang(self):
-        return self.dest
-
-    def get_inverted(self):
-        new_dest = 'niemiecki' if self.dest == 'polski' else 'polski'
-        return Question(self.answer, self.question, new_dest)
+        return self._answer
 
     def __str__(self):
-        return f'{self.question} - {self.answer}'
+        return f'{self._question} - {self._answer}'
