@@ -5,6 +5,7 @@ import random
 from PyQt5.QtCore import Qt
 from question import Question
 from custom_widgets import ScoreQLabel
+import codecs
 
 enc = ['windows-1250', 'utf-8']
 ENC = enc[0]
@@ -23,9 +24,21 @@ class Database:
         for question in self._questions:
             print(question)
 
+    def __is_utf8(self, filename):
+        try:
+            f = codecs.open(filename, encoding='utf-8', errors='strict')
+            for line in f:
+                pass
+            return True
+        except UnicodeDecodeError:
+            return False
+
     def _load_directory(self, tree_item):
         if tree_item.childCount() == 0 and tree_item.is_checked():
-            with open(tree_item.get_path(), 'r', encoding=ENC) as f:
+            if self.__is_utf8(tree_item.get_path()):
+                f = open(tree_item.get_path(), 'r', encoding=enc[1])
+            else:
+                f = open(tree_item.get_path(), 'r', encoding=enc[0])
                 title = f.readline().strip('\n')
                 for i, line in enumerate(f):
                     try:
@@ -36,6 +49,7 @@ class Database:
                         self._questions.append(Question(*split_line))
                     except TypeError as e:
                         print('{}:{} / Couldn\'t parse line:\n{}'.format(f.name, f.fileno(), line))
+            f.close()
         for i in range(tree_item.childCount()):
             item = tree_item.child(i)
             file_path = item.get_path()
