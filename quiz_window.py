@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import *
 from custom_widgets import CustomQTextEdit, ScoreQLabel, color_str, QElapsedTimerWidget
 from quiz import Quiz
+from settings import GOOD_ANS_COLOR, BAD_ANS_COLOR
 
 
 class QuizWidget(QWidget):
@@ -17,7 +18,6 @@ class QuizWidget(QWidget):
         self._order = order
         self._timer = QElapsedTimerWidget()
         self._timer.start()
-        # self._timer.update()
 
         self._l_question = QLabel()
         self._te_logs = QTextEdit()
@@ -70,11 +70,11 @@ class QuizWidget(QWidget):
 
         self._te_logs.append(question + ": " + answer)
         if answer == correct_answer:
-            string = color_str('Brawo!', 'green')
+            string = color_str('Brawo!', GOOD_ANS_COLOR)
             self._l_score.add_correct()
             self._te_logs.append(string)
         else:
-            self._te_logs.append(color_str('Jesteś dupa! Prawidłowa odpowiedź to: ', 'red') + correct_answer)
+            self._te_logs.append(color_str('Jesteś dupa! Prawidłowa odpowiedź to: ', BAD_ANS_COLOR) + correct_answer)
             self._l_score.add_incorrect()
 
         self._quiz.next_question()

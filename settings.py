@@ -1,2 +1,5 @@
 UTF8_ENCODING = 'utf-8'
 WINDOWS_ENCODING = 'windows-1250'
+
+BAD_ANS_COLOR = 'red'
+GOOD_ANS_COLOR = 'green'
