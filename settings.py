@@ -1,0 +1,2 @@
+UTF8_ENCODING = 'utf-8'
+WINDOWS_ENCODING = 'windows-1250'
