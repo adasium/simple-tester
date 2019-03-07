@@ -48,7 +48,5 @@ GPLv3
 ## TODO
 
 - option to choose what language you want to translate to
-- guessing filename encoding
 - add buttons for selecting none and all
-- show correct answers in a row
 - add option to do the test again
