@@ -1,7 +1,8 @@
 class Question:
-    def __init__(self, q=None, a=None, **kwargs):
+    def __init__(self, q=None, a=None, c=None, **kwargs):
         self._question = q
         self._answer = a
+        self._category = c
         other = kwargs.get('question')
         if other:
             self._question = other.get_question()
@@ -13,6 +14,9 @@ class Question:
 
     def get_question(self):
         return self._question
+
+    def get_question_with_cat(self):
+        return f'{self._question} ({self._category})'
 
     def get_answer(self):
         return self._answer

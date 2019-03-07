@@ -16,7 +16,7 @@ class Quiz:
     def get_question(self, index=None):
         index = index if index is not None else self._current_index
         try:
-            return self._get_question(index).get_question()
+            return self._get_question(index).get_question_with_cat()
         except AttributeError:
             return None
 

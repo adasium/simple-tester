@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 import random
 import codecs
 from PyQt5.QtCore import Qt
@@ -48,9 +49,10 @@ class Database:
                     if len(split_line) < 2:
                         print('{}:{} / Couldn\'t parse line:\n{}'.format(f.name, f.fileno(), line))
                         continue
-                    self._questions.append(Question(*split_line))
+                    filename_wo_extension = os.path.splitext(os.path.basename(file_path))[0]
+                    self._questions.append(Question(*split_line, filename_wo_extension))
                 except TypeError as e:
-                    print('{}:{} / Couldn\'t parse line:\n{}'.format(f.name, f.fileno(), line))
+                    print('T{}:{} / Couldn\'t parse line:\n{}'.format(f.name, f.fileno(), line))
             f.close()
         for i in range(tree_item.childCount()):
             item = tree_item.child(i)
