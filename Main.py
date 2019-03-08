@@ -3,12 +3,13 @@
 import sys
 import os
 import random
-from stat import S_ISDIR, ST_MODE
+from stat import S_ISDIR, ST_MODE, S_ISREG
 from PyQt5.QtWidgets import QApplication, QLabel, QTreeWidget, QTreeWidgetItem, QWidget, QFileSystemModel, QTreeView, QVBoxLayout, QHBoxLayout, QPushButton, QRadioButton, QGridLayout, QTextEdit, QProgressBar
 from PyQt5.QtCore import Qt
 from database import Database
 from custom_widgets import CustomQTreeWidgetItem, CustomQTextEdit, ScoreQLabel
 from quiz_window import QuizWidget
+from settings import EXCLUDED_EXTENSIONS
 
 
 class App(QWidget):
@@ -79,6 +80,9 @@ class App(QWidget):
             filename = os.fsdecode(file)
             absolute_path = os.path.join(path, filename)
             mode = os.stat(absolute_path)[ST_MODE]
+
+            if S_ISREG(mode) and filename.endswith(tuple(EXCLUDED_EXTENSIONS)):
+                continue
 
             new_item = CustomQTreeWidgetItem(tree, absolute_path)
             new_item.setText(0, filename)

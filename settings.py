@@ -3,3 +3,4 @@ WINDOWS_ENCODING = 'windows-1250'
 
 BAD_ANS_COLOR = 'red'
 GOOD_ANS_COLOR = 'green'
+EXCLUDED_EXTENSIONS = ['.swp']
