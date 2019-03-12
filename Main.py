@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt
 from database import Database
 from custom_widgets import CustomQTreeWidgetItem, CustomQTextEdit, ScoreQLabel
 from quiz_window import QuizWidget
-from settings import EXCLUDED_EXTENSIONS
+import settings
 
 
 class App(QWidget):
@@ -29,7 +29,8 @@ class App(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.setFixedSize(self.size())
+        if not settings.WINDOW_RESIZABLE:
+            self.setFixedSize(self.size())
         self.tree = QTreeWidget()
         self.tree.setHeaderLabel('')
 
@@ -81,7 +82,7 @@ class App(QWidget):
             absolute_path = os.path.join(path, filename)
             mode = os.stat(absolute_path)[ST_MODE]
 
-            if S_ISREG(mode) and filename.endswith(tuple(EXCLUDED_EXTENSIONS)):
+            if S_ISREG(mode) and filename.endswith(tuple(settings.EXCLUDED_EXTENSIONS)):
                 continue
 
             new_item = CustomQTreeWidgetItem(tree, absolute_path)
