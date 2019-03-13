@@ -7,7 +7,7 @@ import codecs
 from PyQt5.QtCore import Qt
 from question import Question
 from custom_widgets import ScoreQLabel
-from settings import UTF8_ENCODING, WINDOWS_ENCODING
+import settings
 
 
 class CouldNotLoadDatabaseException(Exception):
@@ -38,12 +38,14 @@ class Database:
             file_path = tree_item.get_path()
             is_utf8 = self.__is_utf8(file_path)
             if is_utf8:
-                f = open(file_path, 'r', encoding=UTF8_ENCODING)
+                f = open(file_path, 'r', encoding=settings.UTF8_ENCODING)
             else:
-                f = open(file_path, 'r', encoding=WINDOWS_ENCODING)
+                f = open(file_path, 'r', encoding=settings.WINDOWS_ENCODING)
             title = f.readline().strip('\n')
             for i, line in enumerate(f):
                 try:
+                    if line in settings.IGNORED_LINES:
+                        continue
                     split_line = [x.strip(' ')
                                   for x in line.strip('\n').split(' - ')]
                     if len(split_line) < 2:
