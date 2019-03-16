@@ -13,12 +13,12 @@ class QuizWidget(QWidget):
         self._width = 640
         self._height = 480
         self.setGeometry(self._left, self._top, self._width, self._height)
-        if not settings.WINDOW_RESIZABLE:
-            self.setFixedSize(self.size())
+        self.setFixedSize(self.size())
         self._database = database
         self._order = order
         self._timer = QElapsedTimerWidget()
         self._timer.start()
+        self._mistakes = []
 
         self._l_question = QLabel()
         self._te_logs = QTextEdit()
@@ -31,7 +31,7 @@ class QuizWidget(QWidget):
         self._progress.setMaximum(self._quiz.question_count())
         self._progress.setValue(0)
 
-        self._l_question.setText(self._quiz.get_question())
+        self._l_question.setText(self._quiz.get_question_object().get_question())
 
     def initUI(self):
         self.setGeometry(self._left, self._top, self._width, self._height)
@@ -61,32 +61,45 @@ class QuizWidget(QWidget):
         self._te_answer.setFocus()
 
     def check_answer(self):
-        question = self._quiz.get_question()
+        question_object = self._quiz.get_question_object()
 
-        if question is None:
+        if question_object is None:
             return
 
         answer = self._te_answer.toPlainText()
-        correct_answer = self._quiz.get_answer()
+        correct_answer = question_object.get_answer()
 
-        self._te_logs.append(question + ": " + answer)
+        self._te_logs.append(question_object.get_question() + ": " + answer)
         if answer == correct_answer:
-            string = color_str('Brawo!', settings.GOOD_ANS_COLOR)
+            string = color_str(settings.GOOD_ANS_TEXT, settings.GOOD_ANS_COLOR)
             self._l_score.add_correct()
             self._te_logs.append(string)
         else:
-            self._te_logs.append(color_str('Jesteś dupa! Prawidłowa odpowiedź to: ', settings.BAD_ANS_COLOR) + correct_answer)
+            self._te_logs.append(color_str(settings.BAD_ANS_TEXT, settings.BAD_ANS_COLOR) + correct_answer)
             self._l_score.add_incorrect()
+            self._mistakes.append(question_object)
 
-        self._quiz.next_question()
-        self._progress.setValue(self._quiz.get_question_index())
-        self._l_score.update()
-        self._l_question.setText(self._quiz.get_question())
-
+        self.update_question()
         if self._quiz.is_finished():
-            self._timer.stop()
+            self.perform_end_quiz_actions()
 
+    def update_question(self):
+        self._quiz.set_next_question()
+        self.update_proggress_bar()
+        self._l_score.update()
+        try:
+            self._l_question.setText(self._quiz.get_question_object().get_question(category=True))
+        except AttributeError:
+            self._l_question.setText('')
 
     def update_proggress_bar(self):
         val = self._quiz.get_current_question_index()
         self._progress.setValue(val)
+
+    def perform_end_quiz_actions(self):
+        self._timer.stop()
+        with open(settings.ERROR_FILE_LOCATION, 'w', encoding='utf-8') as f:
+            for q in self._mistakes:
+                f.write('\n')
+                f.write(str(q))
+

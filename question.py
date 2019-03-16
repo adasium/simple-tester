@@ -12,11 +12,11 @@ class Question:
         if self.inverted:
             self._question, self._answer = self._answer, self._question
 
-    def get_question(self):
-        return self._question
-
-    def get_question_with_cat(self):
-        return f'{self._question} ({self._category})'
+    def get_question(self, category=False):
+        if category:
+            return f'{self._question} ({self._category})'
+        else:
+            return self._question
 
     def get_answer(self):
         return self._answer
