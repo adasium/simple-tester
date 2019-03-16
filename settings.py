@@ -14,3 +14,8 @@ IGNORED_LINES = [
 ]
 
 WINDOW_RESIZABLE = False
+
+try:
+    import local_settings
+except ImportError:
+    pass

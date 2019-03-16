@@ -5,6 +5,7 @@ slownictwo/
 
 *.dat
 *.swp
+*.swo
 
-setup.py
+local_settings.py
 tags
