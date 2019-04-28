@@ -6,6 +6,7 @@ BAD_ANS_COLOR = 'red'
 GOOD_ANS_TEXT = 'Brawo!'
 GOOD_ANS_COLOR = 'green'
 
+SAVE_ERRORS = True
 ERROR_FILE_LOCATION = 'data/_ERR.txt'
 
 EXCLUDED_EXTENSIONS = ['.swp']

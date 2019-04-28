@@ -98,8 +98,9 @@ class QuizWidget(QWidget):
 
     def perform_end_quiz_actions(self):
         self._timer.stop()
-        with open(settings.ERROR_FILE_LOCATION, 'w', encoding='utf-8') as f:
-            for q in self._mistakes:
-                f.write('\n')
-                f.write(str(q))
+        if settings.SAVE_ERRORS:
+            with open(settings.ERROR_FILE_LOCATION, 'w', encoding='utf-8') as f:
+                for q in self._mistakes:
+                    f.write('\n')
+                    f.write(str(q))
 
