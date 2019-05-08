@@ -51,6 +51,10 @@ class ScoreQLabel(QLabel):
     def update(self):
         self.setText('Correct: {}\nIncorrect: {}\nScore: {:.2f}%'.format(self.score.correct, self.score.incorrect, self.score.get_percentage()))
 
+    def clear(self):
+        self.score.correct = 0
+        self.score.incorrect = 0
+
 class QElapsedTimerWidget(QLabel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
