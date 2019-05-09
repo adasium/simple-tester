@@ -48,5 +48,3 @@ GPLv3
 ## TODO
 
 - option to choose what language you want to translate to
-- add buttons for selecting none and all
-- add option to do the test again
