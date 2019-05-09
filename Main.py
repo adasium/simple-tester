@@ -44,8 +44,10 @@ class App(QWidget):
         self.fill_tree_view(self.tree, self.data_path)
 
         # add stuff
-        b_load_database = QPushButton('Load database')
-        b_load_database.clicked.connect(self.load_database)
+        b_select_all = QPushButton('All')
+        b_select_all.clicked.connect(self.select_all)
+        b_select_none = QPushButton('None')
+        b_select_none.clicked.connect(self.select_none)
 
         l_order = QLabel('Pick questions order:')
         r_file = QRadioButton('Just like in file')
@@ -57,7 +59,11 @@ class App(QWidget):
 
         # append
         vbox.addWidget(self.tree)
-        vbox.addWidget(b_load_database)
+
+        tree_view_buttons_layout = QGridLayout()
+        tree_view_buttons_layout.addWidget(b_select_all, 0, 0)
+        tree_view_buttons_layout.addWidget(b_select_none, 0, 1)
+        vbox.addLayout(tree_view_buttons_layout)
 
         vbox2.addWidget(l_order)
         vbox2.addWidget(r_file)
@@ -98,6 +104,16 @@ class App(QWidget):
     def load_database(self):
         return Database(self.tree)
 
+    def select_all(self):
+        self.check_subtree(self.tree.invisibleRootItem(), Qt.Checked)
+
+    def select_none(self):
+        self.check_subtree(self.tree.invisibleRootItem(), Qt.Unchecked)
+
+    def check_subtree(self, tree_item, state):
+        tree_item.setCheckState(0, state)
+        for i in range(tree_item.childCount()):
+            tree_item.child(i).setCheckState(0, state)
 
 if __name__ == '__main__':
     app = QApplication([])
