@@ -38,20 +38,38 @@ class QuizWidget(QWidget):
 
         # create stuff
         layout = QGridLayout()
+        left_column = QGridLayout()
+        right_column = QGridLayout()
+
+        layout.addLayout(left_column, 0, 0)
+        layout.addLayout(right_column, 0, 1)
+
+        #left_column
         self._te_logs.setReadOnly(True)
         self._l_score = ScoreQLabel()
+
+        #right_column
         b_submit_answer = QPushButton('Answer')
         b_submit_answer.clicked.connect(self.check_answer)
+        b_redo_test = QPushButton('Restart')
+        b_redo_test.clicked.connect(self.redo_test)
+        self._b_redo_test = b_redo_test
+
+        #bottom
         self._progress = QProgressBar(self)
         self._progress.setMinimum(0)
 
         # assemble
-        layout.addWidget(self._te_logs, 0, 0)
-        layout.addWidget(self._l_question, 1, 0)
-        layout.addWidget(self._l_score, 0, 1)
-        layout.addWidget(self._timer, 1, 1)
-        layout.addWidget(self._te_answer, 2, 0)
-        layout.addWidget(b_submit_answer, 3, 1)
+        left_column.addWidget(self._te_logs, 0, 0)
+        left_column.addWidget(self._l_question, 1, 0)
+        left_column.addWidget(self._te_answer, 2, 0)
+
+        right_column.addWidget(self._l_score, 0, 0)
+        right_column.addWidget(self._timer, 1, 0)
+        right_column.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding), 2, 0, 3, 1)
+        right_column.addWidget(b_submit_answer, 5, 0)
+        right_column.addWidget(b_redo_test, 6, 0)
+
         layout.addWidget(self._progress, 4, 0, 1, 2)
 
         self.setLayout(layout)
@@ -82,6 +100,16 @@ class QuizWidget(QWidget):
         self.update_question()
         if self._quiz.is_finished():
             self.perform_end_quiz_actions()
+
+    def redo_test(self):
+        self._te_answer.setFocus()
+        self._l_score.clear()
+        self._l_score.update()
+        self._progress.setValue(0)
+        self._quiz = Quiz(self._database.get_questions(), self._order)
+        self._l_question.setText(self._quiz.get_question_object().get_question(category=True))
+        self._timer.start()
+        pass
 
     def update_question(self):
         self._quiz.set_next_question()
