@@ -3,6 +3,7 @@
 import sys
 import os
 import random
+import signal
 from stat import S_ISDIR, ST_MODE, S_ISREG
 from PyQt5.QtWidgets import QApplication, QLabel, QTreeWidget, QTreeWidgetItem, QWidget, QFileSystemModel, QTreeView, QVBoxLayout, QHBoxLayout, QPushButton, QRadioButton, QGridLayout, QTextEdit, QProgressBar
 from PyQt5.QtCore import Qt
@@ -10,6 +11,8 @@ from database import Database
 from custom_widgets import CustomQTreeWidgetItem, CustomQTextEdit, ScoreQLabel
 from quiz_window import QuizWidget
 import settings
+
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
 class App(QWidget):
