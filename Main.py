@@ -5,10 +5,10 @@ import os
 import random
 import signal
 from stat import S_ISDIR, ST_MODE, S_ISREG
-from PyQt5.QtWidgets import QApplication, QLabel, QTreeWidget, QTreeWidgetItem, QWidget, QFileSystemModel, QTreeView, QVBoxLayout, QHBoxLayout, QPushButton, QRadioButton, QGridLayout, QTextEdit, QProgressBar
+from PyQt5.QtWidgets import QApplication, QLabel, QTreeWidget, QTreeWidgetItem, QWidget, QFileSystemModel, QTreeView, QVBoxLayout, QHBoxLayout, QPushButton, QRadioButton, QGridLayout, QTextEdit, QProgressBar, QDialog
 from PyQt5.QtCore import Qt
 from database import Database
-from custom_widgets import CustomQTreeWidgetItem, CustomQTextEdit, ScoreQLabel
+from custom_widgets import CustomQTreeWidgetItem, CustomQTextEdit, ScoreQLabel, QInfoDialog
 from quiz_window import QuizWidget
 import settings
 
@@ -79,7 +79,15 @@ class App(QWidget):
         self.show()
 
     def generate_test(self):
+        if self.checkedCount(self.tree.invisibleRootItem()) == 0:
+            d = QInfoDialog(text='You have to select at least one file')
+            d.exec_()
+            return
         database = self.load_database()
+        if len(database.get_questions()) == 0:
+            d = QInfoDialog(text='No questions found in selected files')
+            d.exec_()
+            return
         order = 'random' if self.r_shuffled.isChecked() else ''
         self.test_widget = QuizWidget(database, order)
         self.test_widget.show()
@@ -114,6 +122,14 @@ class App(QWidget):
         tree_item.setCheckState(0, state)
         for i in range(tree_item.childCount()):
             tree_item.child(i).setCheckState(0, state)
+
+    def checkedCount(self, tree_item):
+        count = 0
+        for i in range(tree_item.childCount()):
+            if tree_item.child(i).checkState(0) == Qt.Checked:
+                count += 1
+        return count
+
 
 if __name__ == '__main__':
     app = QApplication([])

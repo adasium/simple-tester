@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QTreeWidgetItem, QTextEdit, QLabel
+from PyQt5.QtWidgets import QTreeWidgetItem, QTextEdit, QLabel, QDialog, QVBoxLayout, QPushButton
 from PyQt5.QtCore import Qt, QElapsedTimer, QTimer
 from score import Score
 
@@ -82,3 +82,21 @@ class QElapsedTimerWidget(QLabel):
             milliseconds = total_milliseconds - minutes*60000 - seconds*1000
             self.setText('{}m {}s {:03d}ms'.format(minutes, seconds, milliseconds))
             self._check_thread_timer.start()
+
+class QInfoDialog(QDialog):
+    def __init__(self, text='', title=' ', *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        l = QLabel()
+        l.setText(text)
+        self.setWindowTitle(title)
+
+        d_layout = QVBoxLayout()
+        self.setLayout(d_layout)
+
+        b = QPushButton()
+        b.clicked.connect(self.close)
+        b.setText("OK")
+
+
+        d_layout.addWidget(l)
+        d_layout.addWidget(b)
