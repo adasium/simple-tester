@@ -87,7 +87,7 @@ class QuizWidget(QWidget):
         answer = self._te_answer.toPlainText()
         correct_answer = question_object.get_answer()
 
-        self._te_logs.append(question_object.get_question() + ": " + answer)
+        self._te_logs.append(color_str(question_object.get_question() + ": " + answer))
         if answer == correct_answer:
             string = color_str(settings.GOOD_ANS_TEXT, settings.GOOD_ANS_COLOR)
             self._l_score.add_correct()

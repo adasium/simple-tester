@@ -5,6 +5,7 @@ BAD_ANS_TEXT = 'Jesteś dupa! Prawidłowa odpowiedź to: '
 BAD_ANS_COLOR = 'red'
 GOOD_ANS_TEXT = 'Brawo!'
 GOOD_ANS_COLOR = 'green'
+DEFAULT_COLOR = 'black'
 
 SAVE_ERRORS = True
 ERROR_FILE_LOCATION = 'data/_ERR.txt'

@@ -4,11 +4,8 @@ from score import Score
 
 
 def color_str(string, color='black'):
-    if color == 'black':
-        return string
-    elif color in ('green', 'red'):
-        string = f'<span style="color:{color};">{string}</span>'
-        return string
+    string = f'<span style="color:{color};">{string}</span>'
+    return string
 
 
 class CustomQTreeWidgetItem(QTreeWidgetItem):
