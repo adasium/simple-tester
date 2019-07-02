@@ -49,8 +49,8 @@ class ScoreQLabel(QLabel):
         self.setText('Correct: {}\nIncorrect: {}\nScore: {:.2f}%'.format(self.score.correct, self.score.incorrect, self.score.get_percentage()))
 
     def clear(self):
-        self.score.correct = 0
-        self.score.incorrect = 0
+        self.score.clear()
+
 
 class QElapsedTimerWidget(QLabel):
     def __init__(self, *args, **kwargs):
@@ -58,7 +58,7 @@ class QElapsedTimerWidget(QLabel):
         self._timer = QElapsedTimer()
         self._timer.start()
         self._check_thread_timer = QTimer(self)
-        self._check_thread_timer.setInterval(1) #.5 seconds
+        self._check_thread_timer.setInterval(1)  # .5 seconds
         self._check_thread_timer.timeout.connect(self.update)
         self.stopped = True
 
@@ -80,6 +80,7 @@ class QElapsedTimerWidget(QLabel):
             self.setText('{}m {}s {:03d}ms'.format(minutes, seconds, milliseconds))
             self._check_thread_timer.start()
 
+
 class QInfoDialog(QDialog):
     def __init__(self, text='', title=' ', *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -93,7 +94,6 @@ class QInfoDialog(QDialog):
         b = QPushButton()
         b.clicked.connect(self.close)
         b.setText("OK")
-
 
         d_layout.addWidget(l)
         d_layout.addWidget(b)
