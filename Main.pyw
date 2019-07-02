@@ -79,7 +79,7 @@ class App(QWidget):
         self.show()
 
     def generate_test(self):
-        if self.checkedCount(self.tree.invisibleRootItem()) == 0:
+        if self.isAnythingChecked(self.tree.invisibleRootItem()) == 0:
             d = QInfoDialog(text='You have to select at least one file')
             d.exec_()
             return
@@ -123,10 +123,10 @@ class App(QWidget):
         for i in range(tree_item.childCount()):
             tree_item.child(i).setCheckState(0, state)
 
-    def checkedCount(self, tree_item):
+    def isAnythingChecked(self, tree_item):
         count = 0
         for i in range(tree_item.childCount()):
-            if tree_item.child(i).checkState(0) == Qt.Checked:
+            if tree_item.child(i).checkState(0) in (Qt.Checked, Qt.PartiallyChecked):
                 count += 1
         return count
 
