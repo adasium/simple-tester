@@ -106,10 +106,10 @@ class QuizWidget(QWidget):
         self._te_answer.setFocus()
         self._l_score.clear()
         self._l_score.update()
-        # self._progress.setValue(0)
         self._quiz = Quiz(self._database.get_questions(), self._order)
         self._l_question.setText(self._quiz.get_question_object().get_question(category=True))
         self.update_progress_bar()
+        self._te_logs.setText('')
         self._timer.start()
         pass
 
