@@ -29,7 +29,8 @@ class QuizWidget(QWidget):
     def __update_database(self):
         self._quiz = Quiz(self._database.get_questions(), self._order)
         self._progress.setMaximum(self._quiz.question_count())
-        self._progress.setValue(0)
+        # self._progress.setValue(0)
+        self.update_progress_bar()
 
         self._l_question.setText(self._quiz.get_question_object().get_question())
 
@@ -105,24 +106,27 @@ class QuizWidget(QWidget):
         self._te_answer.setFocus()
         self._l_score.clear()
         self._l_score.update()
-        self._progress.setValue(0)
+        # self._progress.setValue(0)
         self._quiz = Quiz(self._database.get_questions(), self._order)
         self._l_question.setText(self._quiz.get_question_object().get_question(category=True))
+        self.update_progress_bar()
         self._timer.start()
         pass
 
     def update_question(self):
         self._quiz.set_next_question()
-        self.update_proggress_bar()
+        self.update_progress_bar()
         self._l_score.update()
         try:
             self._l_question.setText(self._quiz.get_question_object().get_question(category=True))
         except AttributeError:
             self._l_question.setText('')
 
-    def update_proggress_bar(self):
+    def update_progress_bar(self):
         val = self._quiz.get_current_question_index()
         self._progress.setValue(val)
+        question_count = len(self._database.get_questions())
+        self._progress.setFormat("{:.2f}% ({}/{})".format(100*(val/question_count), val, question_count))
 
     def perform_end_quiz_actions(self):
         self._timer.stop()
