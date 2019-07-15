@@ -5,7 +5,7 @@ import settings
 
 
 class QuizWidget(QWidget):
-    def __init__(self, database, order):
+    def __init__(self, database, order, **kwargs):
         super().__init__()
         self.setWindowTitle('New test')
         self._left = 10
@@ -23,13 +23,20 @@ class QuizWidget(QWidget):
         self._l_question = QLabel()
         self._te_logs = QTextEdit()
         self._te_answer = CustomQTextEdit(self.check_answer)
+        self._range = kwargs.get('range')
         self.initUI()
         self.__update_database()
 
+    def __get_questions(self):
+        questions = self._database.get_questions()
+        if self._range:
+            questions = questions[self._range]
+        return questions
+
+
     def __update_database(self):
-        self._quiz = Quiz(self._database.get_questions(), self._order)
+        self._quiz = Quiz(self.__get_questions(), self._order)
         self._progress.setMaximum(self._quiz.question_count())
-        # self._progress.setValue(0)
         self.update_progress_bar()
 
         self._l_question.setText(self._quiz.get_question_object().get_question())
@@ -106,7 +113,7 @@ class QuizWidget(QWidget):
         self._te_answer.setFocus()
         self._l_score.clear()
         self._l_score.update()
-        self._quiz = Quiz(self._database.get_questions(), self._order)
+        self._quiz = Quiz(self.__get_questions(), self._order)
         self._l_question.setText(self._quiz.get_question_object().get_question(category=True))
         self.update_progress_bar()
         self._te_logs.setText('')
@@ -125,7 +132,7 @@ class QuizWidget(QWidget):
     def update_progress_bar(self):
         val = self._quiz.get_current_question_index()
         self._progress.setValue(val)
-        question_count = len(self._database.get_questions())
+        question_count = len(self.__get_questions())
         self._progress.setFormat("{:.2f}% ({}/{})".format(100*(val/question_count), val, question_count))
 
     def perform_end_quiz_actions(self):

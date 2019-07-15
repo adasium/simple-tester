@@ -8,7 +8,7 @@ from stat import S_ISDIR, ST_MODE, S_ISREG
 from PyQt5.QtWidgets import QApplication, QLabel, QTreeWidget, QTreeWidgetItem, QWidget, QFileSystemModel, QTreeView, QVBoxLayout, QHBoxLayout, QPushButton, QRadioButton, QGridLayout, QTextEdit, QProgressBar, QDialog
 from PyQt5.QtCore import Qt
 from database import Database
-from custom_widgets import CustomQTreeWidgetItem, CustomQTextEdit, ScoreQLabel, QInfoDialog
+from custom_widgets import CustomQTreeWidgetItem, CustomQTextEdit, ScoreQLabel, QInfoDialog, QQuestionRange
 from quiz_window import QuizWidget
 import settings
 
@@ -57,6 +57,8 @@ class App(QWidget):
         b_start_test = QPushButton('Start test')
         b_start_test.clicked.connect(self.generate_test)
 
+        self.range_widget = QQuestionRange()
+
         # append
         vbox.addWidget(self.tree)
 
@@ -65,6 +67,7 @@ class App(QWidget):
         tree_view_buttons_layout.addWidget(b_select_none, 0, 1)
         vbox.addLayout(tree_view_buttons_layout)
 
+        vbox2.addWidget(self.range_widget)
         vbox2.addWidget(l_order)
         vbox2.addWidget(r_file)
         vbox2.addWidget(r_shuffled)
@@ -79,6 +82,8 @@ class App(QWidget):
         self.show()
 
     def generate_test(self):
+        r = self.range_widget.get_range()
+
         if self.isAnythingChecked(self.tree.invisibleRootItem()) == 0:
             d = QInfoDialog(text='You have to select at least one file')
             d.exec_()
@@ -89,7 +94,7 @@ class App(QWidget):
             d.exec_()
             return
         order = 'random' if self.r_shuffled.isChecked() else ''
-        self.test_widget = QuizWidget(database, order)
+        self.test_widget = QuizWidget(database, order, range=r)
         self.test_widget.show()
 
     def fill_tree_view(self, tree, path):

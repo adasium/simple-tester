@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QTreeWidgetItem, QTextEdit, QLabel, QDialog, QVBoxLayout, QPushButton
+from PyQt5.QtWidgets import QTreeWidgetItem, QTextEdit, QLabel, QDialog, QVBoxLayout, QPushButton, QWidget, QGridLayout, QLineEdit
 from PyQt5.QtCore import Qt, QElapsedTimer, QTimer
+from PyQt5.QtGui import QIntValidator
 from score import Score
 
 
@@ -14,7 +15,7 @@ class CustomQTreeWidgetItem(QTreeWidgetItem):
         self.path = path
 
     def is_checked(self):
-        return self.checkState(0) == Qt.CheckState.Checked
+        return self.checkState(0) == Qt.Checked
 
     def get_path(self):
         return self.path
@@ -97,3 +98,48 @@ class QInfoDialog(QDialog):
 
         d_layout.addWidget(l)
         d_layout.addWidget(b)
+
+
+class QQuestionRange(QWidget):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.initUI()
+
+    def initUI(self):
+        layout = QGridLayout()
+
+        label0 = QLabel('start')
+        label1 = QLabel('end')
+
+        self.setFixedWidth(100)
+
+        e0 = QLineEdit()
+        e0.setValidator(QIntValidator())
+        e0.setMaxLength(4)
+        self.e0 = e0
+
+        e1 = QLineEdit()
+        e1.setValidator(QIntValidator())
+        e1.setMaxLength(4)
+        self.e1 = e1
+
+        layout.addWidget(label0, 0, 0)
+        layout.addWidget(e0, 0, 1)
+        layout.addWidget(label1, 1, 0)
+        layout.addWidget(e1, 1, 1)
+
+        self.setLayout(layout)
+
+    def get_range(self):
+        try:
+            start = int(self.e0.text())
+            end = int(self.e1.text())
+
+            if end-start < 0 or start <=0 or end <= 0:
+                return None
+
+            return slice(start-1, end)
+
+        except ValueError:
+            return None
