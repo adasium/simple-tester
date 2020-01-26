@@ -24,8 +24,6 @@ class App(QWidget):
         self.width = 640
         self.height = 480
 
-        self.database = None
-
         self.initUI()
 
     def initUI(self):
