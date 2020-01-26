@@ -50,8 +50,5 @@ class Database:
             file_path = item.get_path()
             self._load_directory(item)
 
-    def get_size(self):
-        return len(self._questions)
-
     def get_questions(self):
         return self._questions
