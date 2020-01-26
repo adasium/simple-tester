@@ -8,6 +8,7 @@ from PyQt5.QtCore import Qt
 from question import Question
 from custom_widgets import ScoreQLabel
 import settings
+from utils import is_utf8
 
 
 class CouldNotLoadDatabaseException(Exception):
@@ -24,20 +25,11 @@ class Database:
         for question in self._questions:
             print(question)
 
-    def __is_utf8(self, filename):
-        try:
-            f = codecs.open(filename, encoding='utf-8', errors='strict')
-            for line in f:
-                pass
-            return True
-        except UnicodeDecodeError:
-            return False
-
     def _load_directory(self, tree_item):
         if tree_item.childCount() == 0 and tree_item.is_checked():
             file_path = tree_item.get_path()
-            is_utf8 = self.__is_utf8(file_path)
-            encoding = settings.UTF8_ENCODING if is_utf8 else settings.WINDOWS_ENCODING
+            encoding = (settings.UTF8_ENCODING if is_utf8(file_path)
+                        else settings.WINDOWS_ENCODING)
             f = open(file_path, 'r', encoding=encoding)
             title = f.readline().strip('\n')
             for i, line in enumerate(f):
