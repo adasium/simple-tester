@@ -9,3 +9,6 @@ slownictwo/
 
 local_settings.py
 tags
+
+.env
+.venv
