@@ -37,10 +37,8 @@ class Database:
         if tree_item.childCount() == 0 and tree_item.is_checked():
             file_path = tree_item.get_path()
             is_utf8 = self.__is_utf8(file_path)
-            if is_utf8:
-                f = open(file_path, 'r', encoding=settings.UTF8_ENCODING)
-            else:
-                f = open(file_path, 'r', encoding=settings.WINDOWS_ENCODING)
+            encoding = settings.UTF8_ENCODING if is_utf8 else settings.WINDOWS_ENCODING
+            f = open(file_path, 'r', encoding=encoding)
             title = f.readline().strip('\n')
             for i, line in enumerate(f):
                 try:
