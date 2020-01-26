@@ -81,20 +81,17 @@ class App(QWidget):
         self.show()
 
     def generate_test(self):
-        r = self.range_widget.get_range()
-
         if not self._is_anything_checked(self.tree.invisibleRootItem()):
-            d = QInfoDialog(text='You have to select at least one file')
-            d.exec_()
+            QInfoDialog(text='You have to select at least one file').exec_()
             return
+
         database = Database(self.tree)
         if len(database.get_questions()) == 0:
-            d = QInfoDialog(text='No questions found in selected files')
-            d.exec_()
+            QInfoDialog(text='No questions found in selected files').exec_()
             return
+
         order = 'random' if self.r_shuffled.isChecked() else ''
-        self.test_widget = QuizWidget(database, order, range=r)
-        self.test_widget.show()
+        QuizWidget(database, order, range=self.range_widget.get_range()).show()
 
     def fill_tree_view(self, tree, path):
         directory = os.fsencode(path)
