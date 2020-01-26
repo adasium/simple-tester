@@ -30,22 +30,21 @@ class Database:
             file_path = tree_item.get_path()
             encoding = (settings.UTF8_ENCODING if is_utf8(file_path)
                         else settings.WINDOWS_ENCODING)
-            f = open(file_path, 'r', encoding=encoding)
-            title = f.readline().strip('\n')
-            for i, line in enumerate(f):
-                try:
-                    if line in settings.IGNORED_LINES:
-                        continue
-                    split_line = [x.strip(' ')
-                                  for x in line.strip('\n').split(' - ')]
-                    if len(split_line) < 2:
-                        print('{}:{} / Couldn\'t parse line:\n{}'.format(f.name, f.fileno(), line))
-                        continue
-                    filename_wo_extension = os.path.splitext(os.path.basename(file_path))[0]
-                    self._questions.append(Question(*split_line, filename_wo_extension))
-                except TypeError as e:
-                    print('T{}:{} / Couldn\'t parse line:\n{}'.format(f.name, f.fileno(), line))
-            f.close()
+            with open(file_path, 'r', encoding=encoding) as f:
+                title = f.readline().strip('\n')
+                for i, line in enumerate(f):
+                    try:
+                        if line in settings.IGNORED_LINES:
+                            continue
+                        split_line = [x.strip(' ')
+                                    for x in line.strip('\n').split(' - ')]
+                        if len(split_line) < 2:
+                            print('{}:{} / Couldn\'t parse line:\n{}'.format(f.name, f.fileno(), line))
+                            continue
+                        filename_wo_extension = os.path.splitext(os.path.basename(file_path))[0]
+                        self._questions.append(Question(*split_line, filename_wo_extension))
+                    except TypeError as e:
+                        print('T{}:{} / Couldn\'t parse line:\n{}'.format(f.name, f.fileno(), line))
         for i in range(tree_item.childCount()):
             item = tree_item.child(i)
             file_path = item.get_path()
