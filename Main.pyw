@@ -87,7 +87,7 @@ class App(QWidget):
             d = QInfoDialog(text='You have to select at least one file')
             d.exec_()
             return
-        database = self.load_database()
+        database = Database(self.tree)
         if len(database.get_questions()) == 0:
             d = QInfoDialog(text='No questions found in selected files')
             d.exec_()
@@ -112,9 +112,6 @@ class App(QWidget):
             new_item.setCheckState(0, Qt.Unchecked)
             if S_ISDIR(mode):
                 self.fill_tree_view(new_item, f'{path}/{filename}')
-
-    def load_database(self):
-        return Database(self.tree)
 
     def select_all(self):
         self.check_subtree(self.tree.invisibleRootItem(), Qt.Checked)
