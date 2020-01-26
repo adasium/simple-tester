@@ -32,7 +32,7 @@ class App(QWidget):
         if not settings.WINDOW_RESIZABLE:
             self.setFixedSize(self.size())
         self.tree = QTreeWidget()
-        self.tree.setHeaderLabel('')
+        self.tree.headerItem().setHidden(True)
 
         # init layout and create widgets
         main_hbox = QHBoxLayout()
