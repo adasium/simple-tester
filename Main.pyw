@@ -25,7 +25,6 @@ class App(QWidget):
         self.height = 480
 
         self.database = None
-        self.data_path = f'{os.getcwd()}/data'
 
         self.initUI()
 
@@ -41,7 +40,7 @@ class App(QWidget):
         main_hbox = QHBoxLayout()
         vbox = QVBoxLayout()
         vbox2 = QVBoxLayout()
-        self.fill_tree_view(self.tree, self.data_path)
+        self.fill_tree_view(self.tree, settings.DATA_PATH)
 
         # add stuff
         b_select_all = QPushButton('All')

@@ -1,3 +1,6 @@
+import os
+
+
 UTF8_ENCODING = 'utf-8'
 WINDOWS_ENCODING = 'windows-1250'
 
@@ -8,6 +11,8 @@ GOOD_ANS_COLOR = 'green'
 DEFAULT_COLOR = 'black'
 
 SAVE_ERRORS = True
+ROOT_PATH = os.getcwd()
+DATA_PATH = os.path.join(ROOT_PATH, 'data')
 ERROR_FILE_LOCATION = 'data/_ERR.txt'
 
 EXCLUDED_EXTENSIONS = ['.swp']
