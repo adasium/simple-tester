@@ -3,7 +3,6 @@
 
 import os
 import random
-import codecs
 from PyQt5.QtCore import Qt
 from question import Question
 from custom_widgets import ScoreQLabel
