@@ -1,4 +1,4 @@
-def is_utf8(self, filename: str) -> bool:
+def is_utf8(filename: str) -> bool:
     try:
         f = codecs.open(filename, encoding='utf-8', errors='strict')
         for line in f:
