@@ -17,9 +17,9 @@ class Database:
     def __init__(self, tree_widget: QTreeWidget, *args, **kwargs) -> None:
         self._questions = []
         root = tree_widget.invisibleRootItem()
-        self._load_directory(root)
+        self._load_directory_recursively(root)
 
-    def _load_directory(self, tree_item: Union[QTreeWidgetItem, CustomQTreeWidgetItem]) -> None:
+    def _load_directory_recursively(self, tree_item: Union[QTreeWidgetItem, CustomQTreeWidgetItem]) -> None:
         if tree_item.childCount() == 0 and tree_item.is_checked():
             file_path = tree_item.get_path()
             encoding = (settings.UTF8_ENCODING if is_utf8(file_path)
@@ -42,7 +42,7 @@ class Database:
         for i in range(tree_item.childCount()):
             item = tree_item.child(i)
             file_path = item.get_path()
-            self._load_directory(item)
+            self._load_directory_recursively(item)
 
     @property
     def questions(self) -> List[Question]:

@@ -1,7 +1,9 @@
 from PyQt5.QtWidgets import *
-from custom_widgets import CustomQTextEdit, ScoreQLabel, color_str, QElapsedTimerWidget
-from quiz import Quiz
+
 import settings
+from custom_widgets import (CustomQTextEdit, QElapsedTimerWidget, ScoreQLabel,
+                            color_str)
+from quiz import Quiz
 
 
 class QuizWidget(QWidget):
@@ -32,7 +34,6 @@ class QuizWidget(QWidget):
         if self._range is not None:
             questions = questions[self._range]
         return questions
-
 
     def __update_database(self):
         self._quiz = Quiz(self.__get_questions(), self._order)
