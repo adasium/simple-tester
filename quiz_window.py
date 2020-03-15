@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import (QGridLayout, QLabel, QProgressBar, QPushButton,
+                             QSizePolicy, QSpacerItem, QTextEdit, QWidget)
 
 import settings
 from custom_widgets import (CustomQTextEdit, QElapsedTimerWidget, ScoreQLabel,
