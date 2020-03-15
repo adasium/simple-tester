@@ -16,7 +16,7 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
 class App(QWidget):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.title = "Simple tester"
         self.left = 10
@@ -26,7 +26,7 @@ class App(QWidget):
 
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         if not settings.WINDOW_RESIZABLE:
@@ -78,20 +78,20 @@ class App(QWidget):
         # show app
         self.show()
 
-    def generate_test(self):
+    def generate_test(self) -> None:
         if not self._is_anything_checked(self.tree.invisibleRootItem()):
             QInfoDialog(text='You have to select at least one file').exec_()
-            return
+            return None
 
         database = Database(self.tree)
-        if len(database.get_questions()) == 0:
+        if len(database.questions) == 0:
             QInfoDialog(text='No questions found in selected files').exec_()
-            return
+            return None
 
         order = 'random' if self.r_shuffled.isChecked() else ''
         QuizWidget(database, order, range=self.range_widget.get_range()).show()
 
-    def fill_tree_view(self, tree, path):
+    def fill_tree_view(self, tree, path) -> None:
         directory = os.fsencode(path)
         for file in os.listdir(directory):
             filename = os.fsdecode(file)
@@ -108,13 +108,13 @@ class App(QWidget):
             if S_ISDIR(mode):
                 self.fill_tree_view(new_item, f'{path}/{filename}')
 
-    def select_all(self):
+    def select_all(self) -> None:
         self.check_subtree(self.tree.invisibleRootItem(), Qt.Checked)
 
-    def select_none(self):
+    def select_none(self) -> None:
         self.check_subtree(self.tree.invisibleRootItem(), Qt.Unchecked)
 
-    def check_subtree(self, tree_item, state):
+    def check_subtree(self, tree_item, state) -> None:
         tree_item.setCheckState(0, state)
         for i in range(tree_item.childCount()):
             tree_item.child(i).setCheckState(0, state)

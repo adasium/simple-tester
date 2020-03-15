@@ -28,8 +28,8 @@ class QuizWidget(QWidget):
         self.__update_database()
 
     def __get_questions(self):
-        questions = self._database.get_questions()
-        if self._range:
+        questions = self._database.questions
+        if self._range is not None:
             questions = questions[self._range]
         return questions
 
@@ -142,4 +142,3 @@ class QuizWidget(QWidget):
                 for q in self._mistakes:
                     f.write('\n')
                     f.write(str(q))
-
