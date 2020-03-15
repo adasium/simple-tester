@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import sys
 import os
-import random
 import signal
 from stat import S_ISDIR, ST_MODE, S_ISREG
-from PyQt5.QtWidgets import QApplication, QLabel, QTreeWidget, QTreeWidgetItem, QWidget, QFileSystemModel, QTreeView, QVBoxLayout, QHBoxLayout, QPushButton, QRadioButton, QGridLayout, QTextEdit, QProgressBar, QDialog
+from PyQt5.QtWidgets import QApplication, QGridLayout, QHBoxLayout, QLabel, QPushButton, QRadioButton, QTreeWidget, QVBoxLayout, QWidget
 from PyQt5.QtCore import Qt
 from database import Database
-from custom_widgets import CustomQTreeWidgetItem, CustomQTextEdit, ScoreQLabel, QInfoDialog, QQuestionRange
+from custom_widgets import CustomQTreeWidgetItem, QInfoDialog, QQuestionRange
 from quiz_window import QuizWidget
 import settings
 
