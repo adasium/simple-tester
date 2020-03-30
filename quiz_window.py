@@ -11,11 +11,7 @@ class QuizWidget(QWidget):
     def __init__(self, database, order, **kwargs):
         super().__init__()
         self.setWindowTitle('New test')
-        self._left = 10
-        self._top = 10
-        self._width = 640
-        self._height = 480
-        self.setGeometry(self._left, self._top, self._width, self._height)
+        self.setGeometry(*settings.WINDOW_GEOMETRY)
         self.setFixedSize(self.size())
         self._database = database
         self._order = order
@@ -54,18 +50,18 @@ class QuizWidget(QWidget):
         layout.addLayout(left_column, 0, 0)
         layout.addLayout(right_column, 0, 1)
 
-        #left_column
+        # left_column
         self._te_logs.setReadOnly(True)
         self._l_score = ScoreQLabel()
 
-        #right_column
+        # right_column
         b_submit_answer = QPushButton('Answer')
         b_submit_answer.clicked.connect(self.check_answer)
         b_redo_test = QPushButton('Restart')
         b_redo_test.clicked.connect(self.redo_test)
         self._b_redo_test = b_redo_test
 
-        #bottom
+        # bottom
         self._progress = QProgressBar(self)
         self._progress.setMinimum(0)
 
@@ -120,7 +116,6 @@ class QuizWidget(QWidget):
         self.update_progress_bar()
         self._te_logs.setText('')
         self._timer.start()
-        pass
 
     def update_question(self):
         self._quiz.set_next_question()
