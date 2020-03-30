@@ -13,3 +13,4 @@ tags
 .env
 .venv
 *.org
+/.mypy_cache/
