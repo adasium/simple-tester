@@ -40,7 +40,7 @@ class QuizWidget(QWidget):
         self._l_question.setText(self._quiz.get_question_object().get_question())
 
     def initUI(self):
-        self.setGeometry(self._left, self._top, self._width, self._height)
+        self.setGeometry(*settings.WINDOW_GEOMETRY)
 
         # create stuff
         layout = QGridLayout()
@@ -72,7 +72,10 @@ class QuizWidget(QWidget):
 
         right_column.addWidget(self._l_score, 0, 0)
         right_column.addWidget(self._timer, 1, 0)
-        right_column.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding), 2, 0, 3, 1)
+        right_column.addItem(
+            QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding),
+            2, 0, 3, 1,
+        )
         right_column.addWidget(b_submit_answer, 5, 0)
         right_column.addWidget(b_redo_test, 6, 0)
 
