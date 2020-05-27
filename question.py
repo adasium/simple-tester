@@ -1,8 +1,8 @@
 class Question:
-    def __init__(self, q=None, a=None, c=None, **kwargs):
-        self._question = q
-        self._answer = a
-        self._category = c
+    def __init__(self, question=None, answer=None, category=None, **kwargs):
+        self._question = question
+        self._answer = answer
+        self._category = category
         other = kwargs.get('question')
         if other:
             self._question = other.get_question()

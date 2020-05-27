@@ -1,18 +1,17 @@
-from PyQt5.QtWidgets import *
-from custom_widgets import CustomQTextEdit, ScoreQLabel, color_str, QElapsedTimerWidget
-from quiz import Quiz
+from PyQt5.QtWidgets import (QGridLayout, QLabel, QProgressBar, QPushButton,
+                             QSizePolicy, QSpacerItem, QTextEdit, QWidget)
+
 import settings
+from custom_widgets import (CustomQTextEdit, QElapsedTimerWidget, ScoreQLabel,
+                            color_str)
+from quiz import Quiz
 
 
 class QuizWidget(QWidget):
     def __init__(self, database, order, **kwargs):
         super().__init__()
         self.setWindowTitle('New test')
-        self._left = 10
-        self._top = 10
-        self._width = 640
-        self._height = 480
-        self.setGeometry(self._left, self._top, self._width, self._height)
+        self.setGeometry(*settings.WINDOW_GEOMETRY)
         self.setFixedSize(self.size())
         self._database = database
         self._order = order
@@ -28,11 +27,10 @@ class QuizWidget(QWidget):
         self.__update_database()
 
     def __get_questions(self):
-        questions = self._database.get_questions()
-        if self._range:
+        questions = self._database.questions
+        if self._range is not None:
             questions = questions[self._range]
         return questions
-
 
     def __update_database(self):
         self._quiz = Quiz(self.__get_questions(), self._order)
@@ -42,7 +40,7 @@ class QuizWidget(QWidget):
         self._l_question.setText(self._quiz.get_question_object().get_question())
 
     def initUI(self):
-        self.setGeometry(self._left, self._top, self._width, self._height)
+        self.setGeometry(*settings.WINDOW_GEOMETRY)
 
         # create stuff
         layout = QGridLayout()
@@ -52,18 +50,18 @@ class QuizWidget(QWidget):
         layout.addLayout(left_column, 0, 0)
         layout.addLayout(right_column, 0, 1)
 
-        #left_column
+        # left_column
         self._te_logs.setReadOnly(True)
         self._l_score = ScoreQLabel()
 
-        #right_column
+        # right_column
         b_submit_answer = QPushButton('Answer')
         b_submit_answer.clicked.connect(self.check_answer)
         b_redo_test = QPushButton('Restart')
         b_redo_test.clicked.connect(self.redo_test)
         self._b_redo_test = b_redo_test
 
-        #bottom
+        # bottom
         self._progress = QProgressBar(self)
         self._progress.setMinimum(0)
 
@@ -74,7 +72,10 @@ class QuizWidget(QWidget):
 
         right_column.addWidget(self._l_score, 0, 0)
         right_column.addWidget(self._timer, 1, 0)
-        right_column.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding), 2, 0, 3, 1)
+        right_column.addItem(
+            QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding),
+            2, 0, 3, 1,
+        )
         right_column.addWidget(b_submit_answer, 5, 0)
         right_column.addWidget(b_redo_test, 6, 0)
 
@@ -118,7 +119,6 @@ class QuizWidget(QWidget):
         self.update_progress_bar()
         self._te_logs.setText('')
         self._timer.start()
-        pass
 
     def update_question(self):
         self._quiz.set_next_question()
@@ -142,4 +142,3 @@ class QuizWidget(QWidget):
                 for q in self._mistakes:
                     f.write('\n')
                     f.write(str(q))
-

@@ -9,3 +9,8 @@ slownictwo/
 
 local_settings.py
 tags
+
+.env
+.venv
+*.org
+/.mypy_cache/

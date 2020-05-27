@@ -1,47 +1,43 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import sys
 import os
-import random
 import signal
-from stat import S_ISDIR, ST_MODE, S_ISREG
-from PyQt5.QtWidgets import QApplication, QLabel, QTreeWidget, QTreeWidgetItem, QWidget, QFileSystemModel, QTreeView, QVBoxLayout, QHBoxLayout, QPushButton, QRadioButton, QGridLayout, QTextEdit, QProgressBar, QDialog
+from stat import S_ISDIR, S_ISREG, ST_MODE
+from typing import Union
+
 from PyQt5.QtCore import Qt
-from database import Database
-from custom_widgets import CustomQTreeWidgetItem, CustomQTextEdit, ScoreQLabel, QInfoDialog, QQuestionRange
-from quiz_window import QuizWidget
+from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
+                             QPushButton, QRadioButton, QTreeWidget,
+                             QTreeWidgetItem, QVBoxLayout, QWidget)
+
 import settings
+from custom_widgets import CustomQTreeWidgetItem, QInfoDialog, QQuestionRange
+from database import Database
+from quiz_window import QuizWidget
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
 class App(QWidget):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.title = "Simple tester"
-        self.left = 10
-        self.top = 10
-        self.width = 640
-        self.height = 480
-
-        self.database = None
-        self.data_path = f'{os.getcwd()}/data'
 
         self.initUI()
 
-    def initUI(self):
+    def initUI(self) -> None:
         self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setGeometry(*settings.WINDOW_GEOMETRY)
         if not settings.WINDOW_RESIZABLE:
             self.setFixedSize(self.size())
         self.tree = QTreeWidget()
-        self.tree.setHeaderLabel('')
+        self.tree.headerItem().setHidden(True)
 
         # init layout and create widgets
         main_hbox = QHBoxLayout()
         vbox = QVBoxLayout()
         vbox2 = QVBoxLayout()
-        self.fill_tree_view(self.tree, self.data_path)
+        self.fill_tree_view(self.tree, settings.DATA_PATH)
 
         # add stuff
         b_select_all = QPushButton('All')
@@ -81,23 +77,20 @@ class App(QWidget):
         # show app
         self.show()
 
-    def generate_test(self):
-        r = self.range_widget.get_range()
+    def generate_test(self) -> None:
+        if not self._is_anything_checked(self.tree.invisibleRootItem()):
+            QInfoDialog(text='You have to select at least one file').exec_()
+            return None
 
-        if self.isAnythingChecked(self.tree.invisibleRootItem()) == 0:
-            d = QInfoDialog(text='You have to select at least one file')
-            d.exec_()
-            return
-        database = self.load_database()
-        if len(database.get_questions()) == 0:
-            d = QInfoDialog(text='No questions found in selected files')
-            d.exec_()
-            return
+        database = Database(self.tree)
+        if len(database.questions) == 0:
+            QInfoDialog(text='No questions found in selected files').exec_()
+            return None
+
         order = 'random' if self.r_shuffled.isChecked() else ''
-        self.test_widget = QuizWidget(database, order, range=r)
-        self.test_widget.show()
+        QuizWidget(database, order, range=self.range_widget.get_range()).show()
 
-    def fill_tree_view(self, tree, path):
+    def fill_tree_view(self, tree: Union[QTreeWidgetItem, CustomQTreeWidgetItem], path: str) -> None:
         directory = os.fsencode(path)
         for file in os.listdir(directory):
             filename = os.fsdecode(file)
@@ -114,26 +107,23 @@ class App(QWidget):
             if S_ISDIR(mode):
                 self.fill_tree_view(new_item, f'{path}/{filename}')
 
-    def load_database(self):
-        return Database(self.tree)
-
-    def select_all(self):
+    def select_all(self) -> None:
         self.check_subtree(self.tree.invisibleRootItem(), Qt.Checked)
 
-    def select_none(self):
+    def select_none(self) -> None:
         self.check_subtree(self.tree.invisibleRootItem(), Qt.Unchecked)
 
-    def check_subtree(self, tree_item, state):
+    def check_subtree(self, tree_item: QTreeWidgetItem, state: Qt.CheckState) -> None:
         tree_item.setCheckState(0, state)
         for i in range(tree_item.childCount()):
             tree_item.child(i).setCheckState(0, state)
 
-    def isAnythingChecked(self, tree_item):
+    def _is_anything_checked(self, tree_item: QTreeWidgetItem) -> bool:
         count = 0
         for i in range(tree_item.childCount()):
             if tree_item.child(i).checkState(0) in (Qt.Checked, Qt.PartiallyChecked):
                 count += 1
-        return count
+        return count != 0
 
 
 if __name__ == '__main__':
