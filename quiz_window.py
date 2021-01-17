@@ -10,7 +10,6 @@ from quiz import Quiz
 class QuizWidget(QWidget):
     def __init__(self, database, order, **kwargs):
         super().__init__()
-        # TODO(#6): set fixed width to fix flickering
         self.setWindowTitle('New test')
         self.setGeometry(*settings.WINDOW_GEOMETRY)
         self.setFixedSize(self.size())
