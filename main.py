@@ -8,12 +8,13 @@ from typing import Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
                              QPushButton, QRadioButton, QTreeWidget,
-                             QTreeWidgetItem, QVBoxLayout, QWidget)
+                             QTreeWidgetItem, QVBoxLayout, QWidget, QGroupBox, QStackedLayout, QSizePolicy)
 
 import settings
-from custom_widgets import CustomQTreeWidgetItem, QInfoDialog, QQuestionRange
+from custom_widgets import CustomQTreeWidgetItem, QInfoDialog, QQuestionRange, HeightFillerWidget
 from database import Database
 from quiz_window import QuizWidget
+from utils import group_widgets
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
@@ -36,7 +37,7 @@ class App(QWidget):
         # init layout and create widgets
         main_hbox = QHBoxLayout()
         vbox = QVBoxLayout()
-        vbox2 = QVBoxLayout()
+        right_column = QVBoxLayout()
         self.fill_tree_view(self.tree, settings.DATA_PATH)
 
         # add stuff
@@ -46,11 +47,9 @@ class App(QWidget):
         b_select_none = QPushButton('None')
         b_select_none.clicked.connect(self.select_none)
 
-        l_order = QLabel('Pick questions order:')
-        r_file = QRadioButton('Just like in file')
-        r_shuffled = QRadioButton('Shuffled')
-        self.r_shuffled = r_shuffled
-        r_shuffled.setChecked(True)
+        self.r_shuffled = QRadioButton('Shuffled')
+        self.r_shuffled.setChecked(True)
+
         b_start_test = QPushButton('Start test')
         b_start_test.clicked.connect(self.generate_test)
 
@@ -64,15 +63,37 @@ class App(QWidget):
         tree_view_buttons_layout.addWidget(b_select_none, 0, 1)
         vbox.addLayout(tree_view_buttons_layout)
 
-        vbox2.addWidget(self.range_widget)
-        vbox2.addWidget(l_order)
-        vbox2.addWidget(r_file)
-        vbox2.addWidget(r_shuffled)
-        vbox2.addWidget(b_start_test)
+        right_column.addWidget(
+            group_widgets(
+                *[
+                    self.range_widget,
+                ],
+                title='question range',
+                layout=QStackedLayout,
+                kwargs={
+                    'max_width': 150,
+                },
+            )
+        )
+        right_column.addWidget(
+            group_widgets(
+                *[
+                    QLabel('Pick questions order:'),
+                    QRadioButton('Just like in file'),
+                    self.r_shuffled,
+                ],
+                title='question order',
+                kwargs={
+                    'max_width': 150,
+                },
+            )
+        )
+        right_column.addWidget(HeightFillerWidget())
+        right_column.addWidget(b_start_test)
 
         # assemble
         main_hbox.addLayout(vbox)
-        main_hbox.addLayout(vbox2)
+        main_hbox.addLayout(right_column)
         self.setLayout(main_hbox)
 
         # show app
