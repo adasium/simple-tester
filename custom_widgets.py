@@ -109,6 +109,7 @@ class QQuestionRange(QWidget):
     def initUI(self):
         layout = QGridLayout()
 
+        # TODO(#3): labels are not customizable
         label0 = QLabel('start')
         label1 = QLabel('end')
 
@@ -132,6 +133,8 @@ class QQuestionRange(QWidget):
         self.setLayout(layout)
 
     def get_range(self):
+        # TODO: set default value
+        # TODO: validate e1 >= e2
         try:
             start = int(self.e0.text())
             end = int(self.e1.text())
