@@ -53,7 +53,7 @@ class App(QWidget):
         b_start_test = QPushButton('Start test')
         b_start_test.clicked.connect(self.generate_test)
 
-        self.range_widget = QQuestionRange()
+        self.range_widget = QQuestionRange(first_label='start', second_label='end')
 
         # append
         vbox.addWidget(self.tree)
