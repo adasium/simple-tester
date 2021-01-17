@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QTreeWidgetItem, QTextEdit, QLabel, QDialog, QVBoxLayout, QPushButton, QWidget, QGridLayout, QLineEdit
+from PyQt5.QtWidgets import QTreeWidgetItem, QTextEdit, QLabel, QDialog, QVBoxLayout, QPushButton, QWidget, QGridLayout, QLineEdit, QSizePolicy
 from PyQt5.QtCore import Qt, QElapsedTimer, QTimer
 from PyQt5.QtGui import QIntValidator
 from score import Score
@@ -143,3 +143,21 @@ class QQuestionRange(QWidget):
 
         except ValueError:
             return None
+
+
+class FillerWidget(QWidget):
+    def __init__(self, width=False, height=True, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        width_policy = QSizePolicy.Expanding if width else QSizePolicy.Minimum
+        height_policy = QSizePolicy.Expanding if height else QSizePolicy.Minimum
+        self.setSizePolicy(width_policy, height_policy)
+
+
+class WidthFillerWidget(FillerWidget):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(width=True, *args, **kwargs)
+
+
+class HeightFillerWidget(FillerWidget):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(height=True, *args, **kwargs)
