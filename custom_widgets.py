@@ -134,7 +134,7 @@ class QQuestionRange(QWidget):
 
     def get_range(self):
         # TODO(#4): set default value
-        # TODO: validate e1 >= e2
+        # TODO(#5): validate e1 >= e2
         try:
             start = int(self.e0.text())
             end = int(self.e1.text())
