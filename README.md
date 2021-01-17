@@ -2,7 +2,7 @@
 
 <!-- TODO(#10): Include screenshots of the program -->
 <!-- TODO(#11): Add description how the program works -->
-<!-- TODO: Merge "Prerequisites" and "Getting Started" into "Quick Start" -->
+<!-- TODO(#12): Merge "Prerequisites" and "Getting Started" into "Quick Start" -->
 With this program you can learn new vocabulary defined by yourself. Just put your text files in data directory.
 
 It is neither a beautiful program nor has it readable code but it does the job for me.
