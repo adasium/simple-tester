@@ -64,6 +64,7 @@ class App(QWidget):
         vbox.addLayout(tree_view_buttons_layout)
 
         right_column.addWidget(
+            # TODO(#9): Make question range checkable. It should be disabled by default.
             group_widgets(
                 *[
                     self.range_widget,
