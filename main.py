@@ -40,6 +40,7 @@ class App(QWidget):
         self.fill_tree_view(self.tree, settings.DATA_PATH)
 
         # add stuff
+        # TODO(#1): 'Load database' button doesn't update file list
         b_select_all = QPushButton('All')
         b_select_all.clicked.connect(self.select_all)
         b_select_none = QPushButton('None')
