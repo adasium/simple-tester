@@ -1,7 +1,7 @@
 # Simple Tester
 
 <!-- TODO(#10): Include screenshots of the program -->
-<!-- TODO: Add description how the program works -->
+<!-- TODO(#11): Add description how the program works -->
 <!-- TODO: Merge "Prerequisites" and "Getting Started" into "Quick Start" -->
 With this program you can learn new vocabulary defined by yourself. Just put your text files in data directory.
 
