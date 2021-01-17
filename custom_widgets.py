@@ -102,33 +102,29 @@ class QInfoDialog(QDialog):
 
 class QQuestionRange(QWidget):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, first_label='start', second_label='end', *args, **kwargs):
+        self.first_label = first_label
+        self.second_label = second_label
         super().__init__(*args, **kwargs)
         self.initUI()
 
     def initUI(self):
         layout = QGridLayout()
 
-        # TODO(#3): labels are not customizable
-        label0 = QLabel('start')
-        label1 = QLabel('end')
-
         self.setFixedWidth(100)
 
-        e0 = QLineEdit()
-        e0.setValidator(QIntValidator())
-        e0.setMaxLength(4)
-        self.e0 = e0
+        self.e0 = QLineEdit()
+        self.e0.setValidator(QIntValidator())
+        self.e0.setMaxLength(4)
 
-        e1 = QLineEdit()
-        e1.setValidator(QIntValidator())
-        e1.setMaxLength(4)
-        self.e1 = e1
+        self.e1 = QLineEdit()
+        self.e1.setValidator(QIntValidator())
+        self.e1.setMaxLength(4)
 
-        layout.addWidget(label0, 0, 0)
-        layout.addWidget(e0, 0, 1)
-        layout.addWidget(label1, 1, 0)
-        layout.addWidget(e1, 1, 1)
+        layout.addWidget(QLabel(self.first_label), 0, 0)
+        layout.addWidget(self.e0, 0, 1)
+        layout.addWidget(QLabel(self.second_label), 1, 0)
+        layout.addWidget(self.e1, 1, 1)
 
         self.setLayout(layout)
 
