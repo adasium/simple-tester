@@ -17,6 +17,7 @@ class QuizWidget(QWidget):
         self._database = database
         self._order = order
         self._timer = QElapsedTimerWidget()
+        self._timer.setMinimumWidth(100)
         self._timer.start()
         self._mistakes = []
 
