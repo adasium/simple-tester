@@ -7,21 +7,11 @@ With this program you can learn new vocabulary defined by yourself. Just put you
 
 It is neither a beautiful program nor has it readable code but it does the job for me.
 
-## Getting Started
+## Quick start
 
-``` bash
-git clone https://github.com/milochadam/simple-tester.git
-python3 Main.py
-```
-
-### Prerequisites
-
-- python3
-- PyQt5
-
-``` bash
-sudo apt install python3
-pip3 install pyqt5
+```console
+$ pip3 install -r requirements.txt
+$ python3 main.py
 ```
 
 ### Your own data
