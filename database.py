@@ -35,6 +35,7 @@ class Database:
                             for x in line.strip('\n').split(' - ')
                         ]
 
+                        # TODO(#15): allow multiple answers to a question
                         self._questions.append(
                             Question(
                                 question=question,
