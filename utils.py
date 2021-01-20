@@ -13,13 +13,15 @@ def is_utf8(filename: str) -> bool:
         return False
 
 
-def group_widgets(*widgets, title='', layout=None, kwargs=None):
+def group_widgets(*widgets, title='', layout=None, checkable=False, kwargs=None):
     layout = (layout or QVBoxLayout)()
     kwargs = kwargs or {}
 
     gb = QGroupBox()
     gb.setTitle(title)
     gb.setStyleSheet(GROUPBOX_CSS)
+    gb.setCheckable(checkable)
+    gb.setChecked(False)
     _kwargs = {
         'max_width': gb.setMaximumWidth,
         'title': gb.setTitle,

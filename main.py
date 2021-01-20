@@ -63,18 +63,19 @@ class App(QWidget):
         tree_view_buttons_layout.addWidget(b_select_none, 0, 1)
         vbox.addLayout(tree_view_buttons_layout)
 
+        self.range_gb = group_widgets(
+            *[
+                self.range_widget,
+            ],
+            title='question range',
+            layout=QStackedLayout,
+            checkable=True,
+            kwargs={
+                'max_width': 150,
+            },
+        )
         right_column.addWidget(
-            # TODO(#9): Make question range checkable. It should be disabled by default.
-            group_widgets(
-                *[
-                    self.range_widget,
-                ],
-                title='question range',
-                layout=QStackedLayout,
-                kwargs={
-                    'max_width': 150,
-                },
-            )
+            self.range_gb,
         )
         right_column.addWidget(
             group_widgets(
@@ -111,7 +112,8 @@ class App(QWidget):
             return None
 
         order = 'random' if self.r_shuffled.isChecked() else ''
-        QuizWidget(database, order, range=self.range_widget.get_range()).show()
+        range = self.range_widget.get_range() if self.range_gb.isChecked() else None
+        QuizWidget(database, order, range=range).show()
 
     def fill_tree_view(self, tree: Union[QTreeWidgetItem, CustomQTreeWidgetItem], path: str) -> None:
         directory = os.fsencode(path)
