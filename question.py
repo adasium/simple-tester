@@ -1,25 +1,34 @@
+from typing import Any, List, Optional
+
+
+# TODO(#19): Question should be renamed to Flashcard
+# TODO: Implement test suite
 class Question:
-    def __init__(self, question=None, answer=None, category=None, **kwargs):
+    def __init__(self, question: str, answers: List[str], category: Optional[str] = None, **kwargs: Any) -> None:
+        assert len(answers) > 0
         self._question = question
-        self._answer = answer
+        self._answers = answers
         self._category = category
-        other = kwargs.get('question')
-        if other:
-            self._question = other.get_question()
-            self._answer = other.get_answer()
 
-        self.inverted = kwargs.get('inverted', False)
-        if self.inverted:
-            self._question, self._answer = self._answer, self._question
+    @property
+    def question(self) -> str:
+        return self._question
 
-    def get_question(self, category=False):
+    @property
+    def answer(self) -> str:
+        return self._answers[0]
+
+    def get_question(self, category: bool = False) -> str:
         if category:
             return f'{self._question} ({self._category})'
         else:
             return self._question
 
-    def get_answer(self):
-        return self._answer
+    def is_correct(self, answer: str) -> bool:
+        return answer in self._answers
 
-    def __str__(self):
-        return f'{self._question} - {self._answer}'
+    def get_answer(self) -> str:
+        return self._answers[0]
+
+    def __str__(self) -> str:
+        return f'{self._question} - {self._answers}'
