@@ -30,16 +30,15 @@ class Database:
                     try:
                         if line in settings.IGNORED_LINES:
                             continue
-                        question, answer = [
+                        question, answers = [
                             x.strip(' ')
                             for x in line.strip('\n').split(' - ')
                         ]
 
-                        # TODO(#15): allow multiple answers to a question
                         self._questions.append(
                             Question(
                                 question=question,
-                                answer=answer,
+                                answers=[answer.strip() for answer in answers.split(',')],
                                 category=file_path.stem,
                             )
                         )
