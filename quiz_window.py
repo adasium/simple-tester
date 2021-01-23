@@ -95,15 +95,14 @@ class QuizWidget(QWidget):
             return
 
         answer = self._te_answer.toPlainText()
-        correct_answer = question_object.get_answer()
 
         self._te_logs.append(color_str(question_object.get_question() + ": " + answer))
-        if answer == correct_answer:
+        if question_object.is_correct(answer):
             string = color_str(settings.GOOD_ANS_TEXT, settings.GOOD_ANS_COLOR)
             self._l_score.add_correct()
             self._te_logs.append(string)
         else:
-            self._te_logs.append(color_str(settings.BAD_ANS_TEXT, settings.BAD_ANS_COLOR) + correct_answer)
+            self._te_logs.append(color_str(settings.BAD_ANS_TEXT, settings.BAD_ANS_COLOR) + question_object.answer)
             self._l_score.add_incorrect()
             self._mistakes.append(question_object)
 
