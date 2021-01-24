@@ -1,9 +1,14 @@
-from score import Score
 import random
+from typing import List
+
+from question import Question
+from enums import Order
+from score import Score
+
 
 class Quiz:
-    def __init__(self, questions, order):
-        if order == 'random':
+    def __init__(self, questions: List[Question], order: Order) -> None:
+        if order == Order.RANDOM:
             random.shuffle(questions)
         self._questions = questions
         self._current_index = 0

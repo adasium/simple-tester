@@ -18,6 +18,10 @@ class Question:
     def answer(self) -> str:
         return self._answers[0]
 
+    @property
+    def answers(self) -> str:
+        return ', '.join(self._answers)
+
     def get_question(self, category: bool = False) -> str:
         if category:
             return f'{self._question} ({self._category})'

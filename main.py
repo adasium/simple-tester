@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import signal
+from enums import Order
 from stat import S_ISDIR, S_ISREG, ST_MODE
 from typing import Union
 
@@ -47,7 +48,7 @@ class App(QWidget):
         b_select_none = QPushButton('None')
         b_select_none.clicked.connect(self.select_none)
 
-        self.r_shuffled = QRadioButton('Shuffled')
+        self.r_shuffled = QRadioButton('shuffled')
         self.r_shuffled.setChecked(True)
 
         b_start_test = QPushButton('Start test')
@@ -80,8 +81,7 @@ class App(QWidget):
         right_column.addWidget(
             group_widgets(
                 *[
-                    QLabel('Pick questions order:'),
-                    QRadioButton('Just like in file'),
+                    QRadioButton('sequential'),
                     self.r_shuffled,
                 ],
                 title='question order',
@@ -111,7 +111,7 @@ class App(QWidget):
             QInfoDialog(text='No questions found in selected files').exec_()
             return None
 
-        order = 'random' if self.r_shuffled.isChecked() else ''
+        order = Order.RANDOM if self.r_shuffled.isChecked() else Order.SEQUENTIAL
         range = self.range_widget.get_range() if self.range_gb.isChecked() else None
         QuizWidget(database, order, range=range).show()
 

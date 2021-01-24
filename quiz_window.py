@@ -1,14 +1,18 @@
-from PyQt5.QtWidgets import (QGridLayout, QLabel, QProgressBar, QPushButton,
-                             QSizePolicy, QSpacerItem, QTextEdit, QWidget)
+from typing import Any, List
+from enums import Order
 
 import settings
+from PyQt5.QtWidgets import (QGridLayout, QLabel, QProgressBar, QPushButton,
+    QSizePolicy, QSpacerItem, QTextEdit, QWidget)
 from custom_widgets import (CustomQTextEdit, QElapsedTimerWidget, ScoreQLabel,
-                            color_str)
+    color_str)
+from database import Database
+from question import Question
 from quiz import Quiz
 
 
 class QuizWidget(QWidget):
-    def __init__(self, database, order, **kwargs):
+    def __init__(self, database: Database, order: Order, **kwargs: Any) -> None:
         super().__init__()
         self.setWindowTitle('New test')
         self.setGeometry(*settings.WINDOW_GEOMETRY)
@@ -27,20 +31,20 @@ class QuizWidget(QWidget):
         self.initUI()
         self.__update_database()
 
-    def __get_questions(self):
+    def __get_questions(self) -> List[Question]:
         questions = self._database.questions
         if self._range is not None:
             questions = questions[self._range]
         return questions
 
-    def __update_database(self):
+    def __update_database(self) -> None:
         self._quiz = Quiz(self.__get_questions(), self._order)
         self._progress.setMaximum(self._quiz.question_count())
         self.update_progress_bar()
 
         self._l_question.setText(self._quiz.get_question_object().get_question())
 
-    def initUI(self):
+    def initUI(self) -> None:
         self.setGeometry(*settings.WINDOW_GEOMETRY)
 
         # create stuff
@@ -102,7 +106,7 @@ class QuizWidget(QWidget):
             self._l_score.add_correct()
             self._te_logs.append(string)
         else:
-            self._te_logs.append(color_str(settings.BAD_ANS_TEXT, settings.BAD_ANS_COLOR) + question_object.answer)
+            self._te_logs.append(color_str(settings.BAD_ANS_TEXT, settings.BAD_ANS_COLOR) + question_object.answers)
             self._l_score.add_incorrect()
             self._mistakes.append(question_object)
 
