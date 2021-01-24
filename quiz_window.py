@@ -9,6 +9,7 @@ from custom_widgets import (CustomQTextEdit, QElapsedTimerWidget, ScoreQLabel,
 from database import Database
 from question import Question
 from quiz import Quiz
+from utils import move_to_screen
 
 
 class QuizWidget(QWidget):
@@ -87,6 +88,8 @@ class QuizWidget(QWidget):
         layout.addWidget(self._progress, 4, 0, 1, 2)
 
         self.setLayout(layout)
+        posx, posy, *_ = settings.WINDOW_GEOMETRY
+        move_to_screen(widget=self, posx=posx, posy=posy)
 
     def show(self):
         super().show()
