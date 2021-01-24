@@ -6,7 +6,7 @@ from enums import Order
 from stat import S_ISDIR, S_ISREG, ST_MODE
 from typing import Union
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
                              QPushButton, QRadioButton, QTreeWidget,
                              QTreeWidgetItem, QVBoxLayout, QWidget, QGroupBox, QStackedLayout, QSizePolicy)
@@ -15,7 +15,7 @@ import settings
 from custom_widgets import CustomQTreeWidgetItem, QInfoDialog, QQuestionRange, HeightFillerWidget
 from database import Database
 from quiz_window import QuizWidget
-from utils import group_widgets
+from utils import group_widgets, get_active_screen, move_to_screen
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
@@ -99,6 +99,8 @@ class App(QWidget):
         self.setLayout(main_hbox)
 
         # show app
+        posx, posy, *_ = settings.WINDOW_GEOMETRY
+        move_to_screen(widget=self, posx=posx, posy=posy)
         self.show()
 
     def generate_test(self) -> None:

@@ -1,6 +1,8 @@
 import codecs
 from stylesheet import GROUPBOX_CSS
-from PyQt5.QtWidgets import QGroupBox, QVBoxLayout
+from PyQt5.QtCore import QPoint
+from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QGroupBox, QVBoxLayout, QApplication
 
 
 def is_utf8(filename: str) -> bool:
@@ -33,3 +35,15 @@ def group_widgets(*widgets, title='', layout=None, checkable=False, kwargs=None)
         layout.addWidget(widget)
     gb.setLayout(layout)
     return gb
+
+
+def get_active_screen():
+    return QApplication.screenAt(QCursor.pos())
+
+
+def move_to_screen(widget, posx=0, posy=0, screen=None):
+    app = QApplication
+    screen = screen or get_active_screen()
+    screen_number = app.screens().index(screen)
+    screen_rect = app.desktop().screenGeometry(screen_number)
+    widget.move(QPoint(screen_rect.x() + posx, screen_rect.y() + posy))
