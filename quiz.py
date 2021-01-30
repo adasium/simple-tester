@@ -27,8 +27,9 @@ class Quiz:
     def set_next_question(self):
         self._current_index += 1
 
-    def question_count(self):
-        return len(self._questions)
+    @property
+    def questions(self) -> List[Question]:
+        return self._questions
 
     def is_finished(self):
-        return self._current_index >= self.question_count()
+        return self._current_index >= len(self._questions)

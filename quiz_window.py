@@ -1,12 +1,12 @@
-from typing import Any, List
-from enums import Order
+from typing import Any, List, Optional
 
 import settings
 from PyQt5.QtWidgets import (QGridLayout, QLabel, QProgressBar, QPushButton,
     QSizePolicy, QSpacerItem, QTextEdit, QWidget)
-from custom_widgets import (CustomQTextEdit, QElapsedTimerWidget, ScoreQLabel,
-    color_str)
+from custom_widgets import (CustomQTextEdit, QElapsedTimerWidget, QInfoDialog,
+    ScoreQLabel, color_str)
 from database import Database
+from enums import Order
 from question import Question
 from quiz import Quiz
 from utils import move_to_screen
@@ -23,27 +23,20 @@ class QuizWidget(QWidget):
         self._timer = QElapsedTimerWidget()
         self._timer.setMinimumWidth(100)
         self._timer.start()
-        self._mistakes = []
+        self._mistakes: List[Question] = []
 
         self._l_question = QLabel()
         self._te_logs = QTextEdit()
         self._te_answer = CustomQTextEdit(self.check_answer)
         self._range = kwargs.get('range')
         self.initUI()
-        self.__update_database()
+        self.redo_test(self.__get_questions())
 
     def __get_questions(self) -> List[Question]:
         questions = self._database.questions
         if self._range is not None:
             questions = questions[self._range]
         return questions
-
-    def __update_database(self) -> None:
-        self._quiz = Quiz(self.__get_questions(), self._order)
-        self._progress.setMaximum(self._quiz.question_count())
-        self.update_progress_bar()
-
-        self._l_question.setText(self._quiz.get_question_object().get_question())
 
     def initUI(self) -> None:
         self.setGeometry(*settings.WINDOW_GEOMETRY)
@@ -61,11 +54,18 @@ class QuizWidget(QWidget):
         self._l_score = ScoreQLabel()
 
         # right_column
+        self._b_redo_errors = QPushButton('Redo mistakes')
+        self._b_redo_errors.clicked.connect(self.redo_errors)
+
+        # left_column
+        self._te_logs.setReadOnly(True)
+        self._l_score = ScoreQLabel()
+
+        # right_column
         b_submit_answer = QPushButton('Answer')
         b_submit_answer.clicked.connect(self.check_answer)
-        b_redo_test = QPushButton('Restart')
-        b_redo_test.clicked.connect(self.redo_test)
-        self._b_redo_test = b_redo_test
+        self._b_redo_test = QPushButton('Restart')
+        self._b_redo_test.clicked.connect(self.redo_test)
 
         # bottom
         self._progress = QProgressBar(self)
@@ -82,8 +82,9 @@ class QuizWidget(QWidget):
             QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding),
             2, 0, 3, 1,
         )
+        right_column.addWidget(self._b_redo_errors, 4, 0)
         right_column.addWidget(b_submit_answer, 5, 0)
-        right_column.addWidget(b_redo_test, 6, 0)
+        right_column.addWidget(self._b_redo_test, 6, 0)
 
         layout.addWidget(self._progress, 4, 0, 1, 2)
 
@@ -117,15 +118,23 @@ class QuizWidget(QWidget):
         if self._quiz.is_finished():
             self.perform_end_quiz_actions()
 
-    def redo_test(self):
+    def redo_test(self, questions: Optional[List[Question]]) -> None:
+        questions = questions or self.__get_questions()
         self._te_answer.setFocus()
         self._l_score.clear()
         self._l_score.update()
-        self._quiz = Quiz(self.__get_questions(), self._order)
+        self._quiz = Quiz(questions, self._order)
         self._l_question.setText(self._quiz.get_question_object().get_question(category=True))
         self.update_progress_bar()
         self._te_logs.setText('')
         self._timer.start()
+
+    def redo_errors(self) -> None:
+        if len(self._mistakes) == 0:
+            QInfoDialog(text='There are no errors (yet)', parent=self).exec_()
+            return
+        self.redo_test(questions=self._mistakes)
+        self._mistakes = []
 
     def update_question(self):
         self._quiz.set_next_question()
@@ -136,11 +145,16 @@ class QuizWidget(QWidget):
         except AttributeError:
             self._l_question.setText('')
 
-    def update_progress_bar(self):
-        val = self._quiz.get_current_question_index()
-        self._progress.setValue(val)
-        question_count = len(self.__get_questions())
-        self._progress.setFormat("{:.2f}% ({}/{})".format(100*(val/question_count), val, question_count))
+    def update_progress_bar(self) -> None:
+        self._progress.setMaximum(len(self._quiz.questions))
+        question_index = self._quiz.get_current_question_index()
+        question_count = len(self._quiz.questions)
+        self._progress.setValue(question_index)
+        self._progress.setFormat("{:.2f}% ({}/{})".format(
+            100 * (question_index/question_count),
+            question_index,
+            question_count,
+        ))
 
     def perform_end_quiz_actions(self):
         self._timer.stop()
