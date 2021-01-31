@@ -1,14 +1,30 @@
 from typing import Any, List, Optional
 
+from PyQt5.QtWidgets import (
+    QFileDialog,
+    QGridLayout,
+    QLabel,
+    QProgressBar,
+    QPushButton,
+    QSizePolicy,
+    QSpacerItem,
+    QTextEdit,
+    QWidget,
+)
+
 import settings
-from PyQt5.QtWidgets import (QGridLayout, QLabel, QProgressBar, QPushButton,
-    QSizePolicy, QSpacerItem, QTextEdit, QWidget)
-from custom_widgets import (CustomQTextEdit, QElapsedTimerWidget, QInfoDialog,
-    ScoreQLabel, color_str)
+from custom_widgets import (
+    CustomQTextEdit,
+    QElapsedTimerWidget,
+    QInfoDialog,
+    ScoreQLabel,
+    color_str,
+)
 from database import Database
 from enums import Order
 from question import Question
 from quiz import Quiz
+from settings import DATA_PATH
 from utils import move_to_screen
 
 
@@ -54,6 +70,9 @@ class QuizWidget(QWidget):
         self._l_score = ScoreQLabel()
 
         # right_column
+        self._b_save_errors = QPushButton('Save mistakes')
+        self._b_save_errors.clicked.connect(self.save_errors)
+
         self._b_redo_errors = QPushButton('Redo mistakes')
         self._b_redo_errors.clicked.connect(self.redo_errors)
 
@@ -82,6 +101,7 @@ class QuizWidget(QWidget):
             QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding),
             2, 0, 3, 1,
         )
+        right_column.addWidget(self._b_save_errors, 3, 0)
         right_column.addWidget(self._b_redo_errors, 4, 0)
         right_column.addWidget(b_submit_answer, 5, 0)
         right_column.addWidget(self._b_redo_test, 6, 0)
@@ -117,6 +137,23 @@ class QuizWidget(QWidget):
         self.update_question()
         if self._quiz.is_finished():
             self.perform_end_quiz_actions()
+
+    def save_errors(self) -> None:
+        if len(self._mistakes) == 0:
+            QInfoDialog(text='There are no errors (yet)', parent=self).exec_()
+            return
+        file_picker = QFileDialog(parent=self)
+        file_picker.setDirectory(DATA_PATH)
+        filename, filters = file_picker.getSaveFileName(parent=self, directory=DATA_PATH, filter='Text Files (*.txt);;Any files (*)')
+        if len(filename) == 0:
+            return
+
+        if 'Text Files' in filters and not filename.endswith('.txt'):
+            filename += '.txt'
+
+        with open(filename, 'w') as f:
+            for question_obj in self._mistakes:
+                f.write('{}\n'.format(question_obj.dumps()))
 
     def redo_test(self, questions: Optional[List[Question]]) -> None:
         questions = questions or self.__get_questions()
@@ -158,8 +195,3 @@ class QuizWidget(QWidget):
 
     def perform_end_quiz_actions(self):
         self._timer.stop()
-        if settings.SAVE_ERRORS:
-            with open(settings.ERROR_FILE_LOCATION, 'w', encoding='utf-8') as f:
-                for q in self._mistakes:
-                    f.write('\n')
-                    f.write(str(q))

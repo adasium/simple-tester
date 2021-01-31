@@ -36,3 +36,9 @@ class Question:
 
     def __str__(self) -> str:
         return f'{self._question} - {self._answers}'
+
+    def dumps(self) -> str:
+        return '{question} - {answers}'.format(
+            question=self._question,
+            answers=', '.join(self._answers),
+        )
