@@ -16,10 +16,8 @@ WINDOW_GEOMETRY = [
     480,
 ]
 
-SAVE_ERRORS = True
 ROOT_PATH = os.getcwd()
 DATA_PATH = os.path.join(ROOT_PATH, 'data')
-ERROR_FILE_LOCATION = 'data/_ERR.txt'
 
 EXCLUDED_EXTENSIONS = ['.swp']
 IGNORED_LINES = [
