@@ -1,6 +1,21 @@
-from PyQt5.QtWidgets import QTreeWidgetItem, QTextEdit, QLabel, QDialog, QVBoxLayout, QPushButton, QWidget, QGridLayout, QLineEdit, QSizePolicy
-from PyQt5.QtCore import Qt, QElapsedTimer, QTimer
+from typing import List, Optional, TypeVar
+
+from PyQt5.QtCore import QElapsedTimer, Qt, QTimer
 from PyQt5.QtGui import QIntValidator
+from PyQt5.QtWidgets import (
+    QDialog,
+    QGridLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QRadioButton,
+    QSizePolicy,
+    QTextEdit,
+    QTreeWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
+
 from score import Score
 
 
@@ -160,3 +175,40 @@ class WidthFillerWidget(FillerWidget):
 class HeightFillerWidget(FillerWidget):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(height=True, *args, **kwargs)
+
+
+T = TypeVar('T')
+
+
+class ValueRadioButton(QRadioButton):
+    def __init__(self, value: T, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._value = value
+
+    @property
+    def value(self) -> T:
+        return self._value
+
+
+class RadioGroupWidget(QWidget):
+    def __init__(self, widgets: List[ValueRadioButton], default: int = 0, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._widgets = widgets
+        self._widgets[default].setChecked(True)
+
+    def get_selected(self) -> Optional[int]:
+        for i, widget in enumerate(self._widgets):
+            if widget.isChecked():
+                return i
+        return None
+
+    @property
+    def selected(self) -> ValueRadioButton:
+        for i, widget in enumerate(self._widgets):
+            if widget.isChecked():
+                return widget
+        raise ValueError('At least one radio should be selected')
+
+    @property
+    def widgets(self) -> List[QRadioButton]:
+        return self._widgets

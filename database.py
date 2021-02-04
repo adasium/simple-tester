@@ -37,7 +37,7 @@ class Database:
 
                         self._questions.append(
                             Question(
-                                question=question,
+                                question=[question.strip() for question in question.split(',')],
                                 answers=[answer.strip() for answer in answers.split(',')],
                                 category=file_path.stem,
                             )

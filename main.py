@@ -2,20 +2,40 @@
 # -*- coding: utf-8 -*-
 import os
 import signal
-from enums import Order
+from enum import Enum
 from stat import S_ISDIR, S_ISREG, ST_MODE
 from typing import Union
 
-from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
-                             QPushButton, QRadioButton, QTreeWidget,
-                             QTreeWidgetItem, QVBoxLayout, QWidget, QGroupBox, QStackedLayout, QSizePolicy)
+from PyQt5.QtCore import QPoint, Qt
+from PyQt5.QtWidgets import (
+    QApplication,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QRadioButton,
+    QSizePolicy,
+    QStackedLayout,
+    QTreeWidget,
+    QTreeWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
 
 import settings
-from custom_widgets import CustomQTreeWidgetItem, QInfoDialog, QQuestionRange, HeightFillerWidget
+from custom_widgets import (
+    CustomQTreeWidgetItem,
+    HeightFillerWidget,
+    QInfoDialog,
+    QQuestionRange,
+    RadioGroupWidget,
+    ValueRadioButton,
+)
 from database import Database
+from enums import Direction, Order
 from quiz_window import QuizWidget
-from utils import group_widgets, get_active_screen, move_to_screen
+from utils import get_active_screen, group_widgets, move_to_screen
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
@@ -90,6 +110,20 @@ class App(QWidget):
                 },
             )
         )
+        self._direction_radio_group = RadioGroupWidget(widgets=[
+            ValueRadioButton(Direction.LEFT_TO_RIGHT, 'left ⟶ right'),
+            ValueRadioButton(Direction.RIGHT_TO_LEFT, 'right ⟶ left'),
+            ValueRadioButton(Direction.RANDOM, 'random'),
+        ])
+        right_column.addWidget(
+            group_widgets(
+                *self._direction_radio_group.widgets,
+                title='question direction',
+                kwargs={
+                    'max_width': 150,
+                },
+            )
+        )
         right_column.addWidget(HeightFillerWidget())
         right_column.addWidget(b_start_test)
 
@@ -104,6 +138,7 @@ class App(QWidget):
         self.show()
 
     def generate_test(self) -> None:
+        print(self._direction_radio_group.get_selected())
         if not self._is_anything_checked(self.tree.invisibleRootItem()):
             QInfoDialog(text='You have to select at least one file').exec_()
             return None
@@ -115,7 +150,7 @@ class App(QWidget):
 
         order = Order.RANDOM if self.r_shuffled.isChecked() else Order.SEQUENTIAL
         range = self.range_widget.get_range() if self.range_gb.isChecked() else None
-        QuizWidget(database, order, range=range).show()
+        QuizWidget(database, order, range=range, direction=self._direction_radio_group.selected.value).show()
 
     def fill_tree_view(self, tree: Union[QTreeWidgetItem, CustomQTreeWidgetItem], path: str) -> None:
         directory = os.fsencode(path)

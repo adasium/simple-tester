@@ -21,7 +21,7 @@ from custom_widgets import (
     color_str,
 )
 from database import Database
-from enums import Order
+from enums import Direction, Order
 from question import Question
 from quiz import Quiz
 from settings import DATA_PATH
@@ -29,7 +29,7 @@ from utils import move_to_screen
 
 
 class QuizWidget(QWidget):
-    def __init__(self, database: Database, order: Order, **kwargs: Any) -> None:
+    def __init__(self, database: Database, order: Order, direction: Direction, **kwargs: Any) -> None:
         super().__init__()
         self.setWindowTitle('New test')
         self.setGeometry(*settings.WINDOW_GEOMETRY)
@@ -40,6 +40,7 @@ class QuizWidget(QWidget):
         self._timer.setMinimumWidth(100)
         self._timer.start()
         self._mistakes: List[Question] = []
+        self._direction = direction
 
         self._l_question = QLabel()
         self._te_logs = QTextEdit()
@@ -117,9 +118,9 @@ class QuizWidget(QWidget):
         self._te_answer.setFocus()
 
     def check_answer(self):
-        question_object = self._quiz.get_question_object()
-
-        if question_object is None:
+        try:
+            question_object = self._quiz.current_question()
+        except StopIteration:
             return
 
         answer = self._te_answer.toPlainText()
@@ -160,8 +161,8 @@ class QuizWidget(QWidget):
         self._te_answer.setFocus()
         self._l_score.clear()
         self._l_score.update()
-        self._quiz = Quiz(questions, self._order)
-        self._l_question.setText(self._quiz.get_question_object().get_question(category=True))
+        self._quiz = Quiz(questions, self._order, self._direction)
+        self._l_question.setText(self._quiz.current_question().get_question(category=True))
         self.update_progress_bar()
         self._te_logs.setText('')
         self._timer.start()
@@ -178,13 +179,13 @@ class QuizWidget(QWidget):
         self.update_progress_bar()
         self._l_score.update()
         try:
-            self._l_question.setText(self._quiz.get_question_object().get_question(category=True))
-        except AttributeError:
+            self._l_question.setText(self._quiz.current_question().get_question(category=True))
+        except StopIteration:
             self._l_question.setText('')
 
     def update_progress_bar(self) -> None:
         self._progress.setMaximum(len(self._quiz.questions))
-        question_index = self._quiz.get_current_question_index()
+        question_index = self._quiz.current_index()
         question_count = len(self._quiz.questions)
         self._progress.setValue(question_index)
         self._progress.setFormat("{:.2f}% ({}/{})".format(
