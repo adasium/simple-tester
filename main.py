@@ -138,7 +138,6 @@ class App(QWidget):
         self.show()
 
     def generate_test(self) -> None:
-        print(self._direction_radio_group.get_selected())
         if not self._is_anything_checked(self.tree.invisibleRootItem()):
             QInfoDialog(text='You have to select at least one file').exec_()
             return None
