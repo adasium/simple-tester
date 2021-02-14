@@ -1,4 +1,6 @@
 from typing import List, Optional, TypeVar
+from pathlib import Path
+from typing import Any
 
 from PyQt5.QtCore import QElapsedTimer, Qt, QTimer
 from PyQt5.QtGui import QIntValidator
@@ -11,6 +13,7 @@ from PyQt5.QtWidgets import (
     QRadioButton,
     QSizePolicy,
     QTextEdit,
+    QTreeWidget,
     QTreeWidgetItem,
     QVBoxLayout,
     QWidget,
@@ -24,16 +27,28 @@ def color_str(string, color='black'):
     return string
 
 
-class CustomQTreeWidgetItem(QTreeWidgetItem):
-    def __init__(self, parent, path, *args, **kwargs):
-        super().__init__(parent, *args, **kwargs)
-        self.path = path
+class TreeWidget(QTreeWidget):
+    def __init__(self, path: Path, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._path = path
 
-    def is_checked(self):
+    @property
+    def path(self) -> Path:
+        return self._path
+
+
+class TreeWidgetItem(QTreeWidgetItem):
+    def __init__(self, path: Path, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self._path = path
+
+    @property
+    def is_checked(self) -> bool:
         return self.checkState(0) == Qt.Checked
 
-    def get_path(self):
-        return self.path
+    @property
+    def path(self) -> Path:
+        return self._path
 
 
 class CustomQTextEdit(QTextEdit):

@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 UTF8_ENCODING = 'utf-8'
 WINDOWS_ENCODING = 'windows-1250'
@@ -16,8 +17,8 @@ WINDOW_GEOMETRY = [
     480,
 ]
 
-ROOT_PATH = os.getcwd()
-DATA_PATH = os.path.join(ROOT_PATH, 'data')
+ROOT_PATH = Path(os.getcwd())
+DATA_PATH = ROOT_PATH.joinpath('data')
 
 EXCLUDED_EXTENSIONS = ['.swp']
 IGNORED_LINES = [
