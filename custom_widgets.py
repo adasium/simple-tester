@@ -132,13 +132,23 @@ class QInfoDialog(QDialog):
 
 class QQuestionRange(QWidget):
 
-    def __init__(self, first_label='start', second_label='end', *args, **kwargs):
+    def __init__(
+            self,
+            first_label='start',
+            second_label='end',
+            first_default: int = 10,
+            second_default: int = 0,
+            *args: Any,
+            **kwargs: Any,
+    ) -> None:
         self.first_label = first_label
         self.second_label = second_label
         super().__init__(*args, **kwargs)
         self.initUI()
+        self.e0.setText(str(first_default))
+        self.e1.setText(str(second_default))
 
-    def initUI(self):
+    def initUI(self) -> None:
         layout = QGridLayout()
 
         self.setFixedWidth(100)
@@ -158,18 +168,11 @@ class QQuestionRange(QWidget):
 
         self.setLayout(layout)
 
-    def get_range(self):
-        # TODO(#4): set default value
-        # TODO(#5): validate e1 >= e2
+    def get_range(self) -> Optional[slice]:
         try:
-            start = int(self.e0.text())
-            end = int(self.e1.text())
-
-            if end-start < 0 or start <=0 or end <= 0:
-                return None
-
-            return slice(start-1, end)
-
+            limit = int(self.e0.text())
+            offset = int(self.e1.text())
+            return slice(offset, limit + offset)
         except ValueError:
             return None
 

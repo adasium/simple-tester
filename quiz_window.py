@@ -47,6 +47,7 @@ class QuizWidget(QWidget):
         self._te_answer = CustomQTextEdit(self.check_answer)
         self._range = kwargs.get('range')
         self.initUI()
+        self.show()
         self.redo_test(self.__get_questions())
 
     def __get_questions(self) -> List[Question]:
@@ -144,8 +145,8 @@ class QuizWidget(QWidget):
             QInfoDialog(text='There are no errors (yet)', parent=self).exec_()
             return
         file_picker = QFileDialog(parent=self)
-        file_picker.setDirectory(DATA_PATH)
-        filename, filters = file_picker.getSaveFileName(parent=self, directory=DATA_PATH, filter='Text Files (*.txt);;Any files (*)')
+        file_picker.setDirectory(str(DATA_PATH))
+        filename, filters = file_picker.getSaveFileName(parent=self, directory=str(DATA_PATH), filter='Text Files (*.txt);;Any files (*)')
         if len(filename) == 0:
             return
 
@@ -157,15 +158,19 @@ class QuizWidget(QWidget):
                 f.write('{}\n'.format(question_obj.dumps()))
 
     def redo_test(self, questions: Optional[List[Question]]) -> None:
-        questions = questions or self.__get_questions()
-        self._te_answer.setFocus()
-        self._l_score.clear()
-        self._l_score.update()
-        self._quiz = Quiz(questions, self._order, self._direction)
-        self._l_question.setText(self._quiz.current_question().get_question(category=True))
-        self.update_progress_bar()
-        self._te_logs.setText('')
-        self._timer.start()
+        try:
+            questions = questions or self.__get_questions()
+            self._te_answer.setFocus()
+            self._l_score.clear()
+            self._l_score.update()
+            self._quiz = Quiz(questions, self._order, self._direction)
+            self._l_question.setText(self._quiz.current_question().get_question(category=True))
+            self.update_progress_bar()
+            self._te_logs.setText('')
+            self._timer.start()
+        except StopIteration:
+            QInfoDialog(text='There are no questions. Did you set question range properly?', parent=self).exec_()
+            self.close()
 
     def redo_errors(self) -> None:
         if len(self._mistakes) == 0:
