@@ -78,7 +78,7 @@ class App(QWidget):
         b_start_test = QPushButton('Start test')
         b_start_test.clicked.connect(self.generate_test)
 
-        self.range_widget = QQuestionRange(first_label='start', second_label='end')
+        self.range_widget = QQuestionRange(first_label='limit', second_label='offset')
 
         # append
         vbox.addWidget(self.tree)
@@ -154,7 +154,7 @@ class App(QWidget):
 
         order = Order.RANDOM if self.r_shuffled.isChecked() else Order.SEQUENTIAL
         range = self.range_widget.get_range() if self.range_gb.isChecked() else None
-        QuizWidget(database, order, range=range, direction=self._direction_radio_group.selected.value).show()
+        QuizWidget(database, order, range=range, direction=self._direction_radio_group.selected.value)
 
     def fill_tree_view(self, tree: Union[TreeWidget, TreeWidgetItem]) -> None:
         directory = os.fsencode(tree.path)
