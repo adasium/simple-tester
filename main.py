@@ -3,41 +3,45 @@
 import os
 import signal
 from enum import Enum
-from stat import S_ISDIR, S_ISREG, ST_MODE
-from typing import Union
 from pathlib import Path
+from stat import S_ISDIR
+from stat import S_ISREG
+from stat import ST_MODE
+from typing import Union
 
-from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtWidgets import (
-    QApplication,
-    QGridLayout,
-    QGroupBox,
-    QHBoxLayout,
-    QLabel,
-    QPushButton,
-    QRadioButton,
-    QSizePolicy,
-    QStackedLayout,
-    QTreeWidget,
-    QTreeWidgetItem,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5.QtCore import QPoint
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QGroupBox
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QRadioButton
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QStackedLayout
+from PyQt5.QtWidgets import QTreeWidget
+from PyQt5.QtWidgets import QTreeWidgetItem
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QWidget
 
 import settings
-from custom_widgets import (
-    TreeWidgetItem,
-    TreeWidget,
-    HeightFillerWidget,
-    QInfoDialog,
-    QQuestionRange,
-    RadioGroupWidget,
-    ValueRadioButton,
-)
+from config import CONFIG
+from custom_widgets import HeightFillerWidget
+from custom_widgets import QInfoDialog
+from custom_widgets import QQuestionRange
+from custom_widgets import RadioGroupWidget
+from custom_widgets import TreeWidget
+from custom_widgets import TreeWidgetItem
+from custom_widgets import ValueRadioButton
 from database import Database
-from enums import Direction, Order
+from enums import Direction
+from enums import Order
 from quiz_window import QuizWidget
-from utils import get_active_screen, group_widgets, move_to_screen
+from utils import get_active_screen
+from utils import group_widgets
+from utils import move_to_screen
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
@@ -54,7 +58,7 @@ class App(QWidget):
         self.setGeometry(*settings.WINDOW_GEOMETRY)
         if not settings.WINDOW_RESIZABLE:
             self.setFixedSize(self.size())
-        self.tree = TreeWidget(path=settings.DATA_PATH)
+        self.tree = TreeWidget(path=CONFIG.data_path or settings.DATA_PATH)
         self.tree.headerItem().setHidden(True)
 
         # init layout and create widgets
@@ -64,13 +68,14 @@ class App(QWidget):
         self.fill_tree_view(self.tree)
 
         # add stuff
-        # TODO(#1): 'Load database' button doesn't update file list
         b_select_all = QPushButton('All')
         b_select_all.clicked.connect(self.select_all)
         b_select_none = QPushButton('None')
         b_select_none.clicked.connect(self.select_none)
         b_refresh = QPushButton('Refresh')
         b_refresh.clicked.connect(self.refresh_file_tree)
+        b_change_dir = QPushButton('Change dir')
+        b_change_dir.clicked.connect(self.change_dir)
 
         self.r_shuffled = QRadioButton('shuffled')
         self.r_shuffled.setChecked(True)
@@ -87,6 +92,7 @@ class App(QWidget):
         tree_view_buttons_layout.addWidget(b_select_all, 0, 0)
         tree_view_buttons_layout.addWidget(b_select_none, 0, 1)
         tree_view_buttons_layout.addWidget(b_refresh, 0, 2)
+        tree_view_buttons_layout.addWidget(b_change_dir, 0, 3)
         vbox.addLayout(tree_view_buttons_layout)
 
         self.range_gb = group_widgets(
@@ -113,13 +119,15 @@ class App(QWidget):
                 kwargs={
                     'max_width': 150,
                 },
-            )
+            ),
         )
-        self._direction_radio_group = RadioGroupWidget(widgets=[
-            ValueRadioButton(Direction.LEFT_TO_RIGHT, 'left ⟶ right'),
-            ValueRadioButton(Direction.RIGHT_TO_LEFT, 'right ⟶ left'),
-            ValueRadioButton(Direction.RANDOM, 'random'),
-        ])
+        self._direction_radio_group = RadioGroupWidget(
+            widgets=[
+                ValueRadioButton(Direction.LEFT_TO_RIGHT, 'left ⟶ right'),
+                ValueRadioButton(Direction.RIGHT_TO_LEFT, 'right ⟶ left'),
+                ValueRadioButton(Direction.RANDOM, 'random'),
+            ],
+        )
         right_column.addWidget(
             group_widgets(
                 *self._direction_radio_group.widgets,
@@ -127,7 +135,7 @@ class App(QWidget):
                 kwargs={
                     'max_width': 150,
                 },
-            )
+            ),
         )
         right_column.addWidget(HeightFillerWidget())
         right_column.addWidget(b_start_test)
@@ -182,6 +190,14 @@ class App(QWidget):
     def refresh_file_tree(self) -> None:
         self.tree.clear()
         self.fill_tree_view(self.tree)
+
+    def change_dir(self) -> None:
+        data_dir = QFileDialog.getExistingDirectory(parent=self, caption='Select a folder:', directory=".")
+        if data_dir != '':
+            data_dir = Path(data_dir)
+            CONFIG.data_path = data_dir
+            self.tree.set_path(data_dir)
+            self.refresh_file_tree()
 
     def check_subtree(self, tree_item: QTreeWidgetItem, state: Qt.CheckState) -> None:
         tree_item.setCheckState(0, state)

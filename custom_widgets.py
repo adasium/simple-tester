@@ -1,23 +1,26 @@
-from typing import List, Optional, TypeVar
 from pathlib import Path
 from typing import Any
+from typing import Generic
+from typing import List
+from typing import Optional
+from typing import TypeVar
 
-from PyQt5.QtCore import QElapsedTimer, Qt, QTimer
+from PyQt5.QtCore import QElapsedTimer
+from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import (
-    QDialog,
-    QGridLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QRadioButton,
-    QSizePolicy,
-    QTextEdit,
-    QTreeWidget,
-    QTreeWidgetItem,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QRadioButton
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QTextEdit
+from PyQt5.QtWidgets import QTreeWidget
+from PyQt5.QtWidgets import QTreeWidgetItem
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QWidget
 
 from score import Score
 
@@ -35,6 +38,9 @@ class TreeWidget(QTreeWidget):
     @property
     def path(self) -> Path:
         return self._path
+
+    def set_path(self, path: Path) -> None:
+        self._path = path
 
 
 class TreeWidgetItem(QTreeWidgetItem):
@@ -187,18 +193,20 @@ class FillerWidget(QWidget):
 
 class WidthFillerWidget(FillerWidget):
     def __init__(self, *args, **kwargs) -> None:
-        super().__init__(width=True, *args, **kwargs)
+        kwargs['width'] = True
+        super().__init__(*args, **kwargs)
 
 
 class HeightFillerWidget(FillerWidget):
     def __init__(self, *args, **kwargs) -> None:
-        super().__init__(height=True, *args, **kwargs)
+        kwargs['height'] = True
+        super().__init__(*args, **kwargs)
 
 
 T = TypeVar('T')
 
 
-class ValueRadioButton(QRadioButton):
+class ValueRadioButton(QRadioButton, Generic[T]):
     def __init__(self, value: T, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._value = value

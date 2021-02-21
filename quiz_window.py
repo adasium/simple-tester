@@ -1,27 +1,26 @@
-from typing import Any, List, Optional
+from typing import Any
+from typing import List
+from typing import Optional
 
-from PyQt5.QtWidgets import (
-    QFileDialog,
-    QGridLayout,
-    QLabel,
-    QProgressBar,
-    QPushButton,
-    QSizePolicy,
-    QSpacerItem,
-    QTextEdit,
-    QWidget,
-)
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QProgressBar
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QSpacerItem
+from PyQt5.QtWidgets import QTextEdit
+from PyQt5.QtWidgets import QWidget
 
 import settings
-from custom_widgets import (
-    CustomQTextEdit,
-    QElapsedTimerWidget,
-    QInfoDialog,
-    ScoreQLabel,
-    color_str,
-)
+from custom_widgets import color_str
+from custom_widgets import CustomQTextEdit
+from custom_widgets import QElapsedTimerWidget
+from custom_widgets import QInfoDialog
+from custom_widgets import ScoreQLabel
 from database import Database
-from enums import Direction, Order
+from enums import Direction
+from enums import Order
 from question import Question
 from quiz import Quiz
 from settings import DATA_PATH
@@ -193,11 +192,13 @@ class QuizWidget(QWidget):
         question_index = self._quiz.current_index()
         question_count = len(self._quiz.questions)
         self._progress.setValue(question_index)
-        self._progress.setFormat("{:.2f}% ({}/{})".format(
-            100 * (question_index/question_count),
-            question_index,
-            question_count,
-        ))
+        self._progress.setFormat(
+            "{:.2f}% ({}/{})".format(
+                100 * (question_index/question_count),
+                question_index,
+                question_count,
+            ),
+        )
 
     def perform_end_quiz_actions(self):
         self._timer.stop()
