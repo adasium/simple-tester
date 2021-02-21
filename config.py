@@ -30,8 +30,9 @@ class Config:
 
     @staticmethod
     def from_json(json: Dict[str, Any]) -> Config:
+        data_path = json.get('data_path')
         return Config(
-            json.get('data_path'),
+            Path(data_path) if data_path is not None else None,
         )
 
     @staticmethod
@@ -41,6 +42,10 @@ class Config:
                 return Config.from_json(json.load(f))
         except FileNotFoundError:
             return Config()
+
+    def dump(self) -> None:
+        with open(CONFIG_PATH, 'w') as f:
+            f.write(json.dumps(self.to_json(), indent=4, sort_keys=True))
 
 
 CONFIG = Config.load(CONFIG_PATH)

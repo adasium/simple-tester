@@ -9,6 +9,7 @@ from stat import S_ISREG
 from stat import ST_MODE
 from typing import Union
 
+from PyQt5.QtCore import QEvent
 from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
@@ -210,6 +211,10 @@ class App(QWidget):
             if tree_item.child(i).checkState(0) in (Qt.Checked, Qt.PartiallyChecked):
                 count += 1
         return count != 0
+
+    def closeEvent(self, event: QEvent) -> None:
+        CONFIG.dump()
+        event.accept()
 
 
 if __name__ == '__main__':
