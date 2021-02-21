@@ -17,8 +17,9 @@ WINDOW_GEOMETRY = [
     480,
 ]
 
-ROOT_PATH = Path(os.getcwd())
+ROOT_PATH = Path(__file__).parent
 DATA_PATH = ROOT_PATH.joinpath('data')
+CONFIG_PATH = ROOT_PATH.joinpath('.config.json')
 
 EXCLUDED_EXTENSIONS = ['.swp']
 IGNORED_LINES = [

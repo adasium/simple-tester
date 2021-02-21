@@ -1,13 +1,29 @@
+from __future__ import annotations
+
 import codecs
-from stylesheet import GROUPBOX_CSS
+from pathlib import Path
+from typing import NamedTuple
+from typing import Optional
+
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QGroupBox, QVBoxLayout, QApplication
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QGroupBox
+from PyQt5.QtWidgets import QLayout
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QWidget
+from typing_extensions import TypedDict
+
+from stylesheet import GROUPBOX_CSS
 
 
-def is_utf8(filename: str) -> bool:
+class _GroupWidgetKwargs(TypedDict, total=False):
+    max_width: int
+
+
+def is_utf8(filename: str | Path) -> bool:
     try:
-        f = codecs.open(filename, encoding='utf-8', errors='strict')
+        f = codecs.open(str(filename), encoding='utf-8', errors='strict')
         for line in f:
             pass
         return True
@@ -15,7 +31,13 @@ def is_utf8(filename: str) -> bool:
         return False
 
 
-def group_widgets(*widgets, title='', layout=None, checkable=False, kwargs=None):
+def group_widgets(
+        *widgets: QWidget,
+        title: str = '',
+        layout: Optional[QLayout] = None,
+        checkable: bool = False,
+        kwargs: _GroupWidgetKwargs = None,
+) -> QGroupBox:
     layout = (layout or QVBoxLayout)()
     kwargs = kwargs or {}
 
@@ -24,13 +46,10 @@ def group_widgets(*widgets, title='', layout=None, checkable=False, kwargs=None)
     gb.setStyleSheet(GROUPBOX_CSS)
     gb.setCheckable(checkable)
     gb.setChecked(False)
-    _kwargs = {
-        'max_width': gb.setMaximumWidth,
-        'title': gb.setTitle,
-    }
-    for kwarg, fun in _kwargs.items():
-        if kwarg in kwargs:
-            fun(kwargs.pop(kwarg))
+
+    if (max_width := kwargs.get('max_width')) is not None:
+        gb.setMaximumWidth(max_width)
+
     for widget in widgets:
         layout.addWidget(widget)
     gb.setLayout(layout)

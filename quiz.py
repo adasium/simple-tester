@@ -1,7 +1,8 @@
 import random
 from typing import List
 
-from enums import Direction, Order
+from enums import Direction
+from enums import Order
 from question import Question
 from score import Score
 
