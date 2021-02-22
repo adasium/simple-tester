@@ -7,6 +7,7 @@ from dataclasses import field
 from pathlib import Path
 from typing import Any
 from typing import Dict
+from typing import List
 from typing import Optional
 from typing import overload
 
@@ -25,12 +26,15 @@ def _jsonify(value: Path) -> str: ...
 def _jsonify(value):
     if isinstance(value, Path):
         return str(value)
+    if isinstance(value, list):
+        return [_jsonify(val) for val in value]
     return value
 
 
 @dataclass
 class Config:
     data_path: Optional[Path] = None
+    recent_files: List[Path] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         if self.data_path is not None:
@@ -47,8 +51,11 @@ class Config:
     @staticmethod
     def from_json(json: Dict[str, Any]) -> Config:
         data_path = json.get('data_path')
+        recent_files = json.get('recent_files', [])
+
         return Config(
             Path(data_path) if data_path is not None else None,
+            [Path(file) for file in recent_files],
         )
 
     @staticmethod
