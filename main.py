@@ -96,7 +96,6 @@ class App(QWidget):
 
         # append
         vbox.addWidget(self._current_path)
-        print(CONFIG.data_path)
         vbox.addWidget(self.tree if CONFIG.data_path is not None else self._no_data_path_widget)
 
         tree_view_buttons_layout = QGridLayout()
