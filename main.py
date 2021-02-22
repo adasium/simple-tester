@@ -7,6 +7,8 @@ from pathlib import Path
 from stat import S_ISDIR
 from stat import S_ISREG
 from stat import ST_MODE
+from typing import Any
+from typing import Optional
 from typing import Union
 
 from PyQt5.QtCore import QEvent
@@ -30,6 +32,7 @@ from PyQt5.QtWidgets import QWidget
 import settings
 from config import CONFIG
 from custom_widgets import HeightFillerWidget
+from custom_widgets import Label
 from custom_widgets import QInfoDialog
 from custom_widgets import QQuestionRange
 from custom_widgets import RadioGroupWidget
@@ -44,6 +47,7 @@ from utils import get_active_screen
 from utils import group_widgets
 from utils import move_to_screen
 
+
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
@@ -51,6 +55,7 @@ class App(QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.title = "Simple tester"
+        self._current_path = Label(str(CONFIG.data_path or ''), max_height=10)
 
         self.initUI()
 
@@ -61,10 +66,12 @@ class App(QWidget):
             self.setFixedSize(self.size())
         self.tree = TreeWidget(path=CONFIG.data_path or settings.DATA_PATH)
         self.tree.headerItem().setHidden(True)
+        self._no_data_path_widget = Label('Select data dir')
 
         # init layout and create widgets
         main_hbox = QHBoxLayout()
         vbox = QVBoxLayout()
+        self._main_vbox = vbox
         right_column = QVBoxLayout()
         self.fill_tree_view(self.tree)
 
@@ -87,7 +94,9 @@ class App(QWidget):
         self.range_widget = QQuestionRange(first_label='limit', second_label='offset')
 
         # append
-        vbox.addWidget(self.tree)
+        vbox.addWidget(self._current_path)
+        print(CONFIG.data_path)
+        vbox.addWidget(self.tree if CONFIG.data_path is not None else self._no_data_path_widget)
 
         tree_view_buttons_layout = QGridLayout()
         tree_view_buttons_layout.addWidget(b_select_all, 0, 0)
@@ -196,9 +205,13 @@ class App(QWidget):
         data_dir = QFileDialog.getExistingDirectory(parent=self, caption='Select a folder:', directory=".")
         if data_dir != '':
             data_dir = Path(data_dir)
-            CONFIG.data_path = data_dir
+            self._current_path.setText(str(data_dir))
+            if CONFIG.data_path is None:
+                self._main_vbox.removeWidget(self._no_data_path_widget)
+                self._main_vbox.insertWidget(1, self.tree)
             self.tree.set_path(data_dir)
             self.refresh_file_tree()
+            CONFIG.data_path = data_dir
 
     def check_subtree(self, tree_item: QTreeWidgetItem, state: Qt.CheckState) -> None:
         tree_item.setCheckState(0, state)

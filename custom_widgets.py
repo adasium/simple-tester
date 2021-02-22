@@ -238,3 +238,11 @@ class RadioGroupWidget(QWidget):
     @property
     def widgets(self) -> List[QRadioButton]:
         return self._widgets
+
+
+class Label(QLabel):
+    def __init__(self, *args: Any, max_height: Optional[int] = None, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.setAlignment(Qt.AlignCenter)
+        if max_height is not None:
+            self.setMaximumHeight(max_height)
