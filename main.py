@@ -8,6 +8,7 @@ from stat import S_ISDIR
 from stat import S_ISREG
 from stat import ST_MODE
 from typing import Any
+from typing import List
 from typing import Optional
 from typing import Union
 
@@ -187,7 +188,10 @@ class App(QWidget):
             new_item = TreeWidgetItem(file_path, tree)
             new_item.setText(0, filename)
             new_item.setFlags(new_item.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
-            new_item.setCheckState(0, Qt.Unchecked)
+            if file_path in CONFIG.recent_files:
+                new_item.setCheckState(0, Qt.Checked)
+            else:
+                new_item.setCheckState(0, Qt.Unchecked)
             if S_ISDIR(mode):
                 self.fill_tree_view(new_item)
 
@@ -198,6 +202,7 @@ class App(QWidget):
         self.check_subtree(self.tree.invisibleRootItem(), Qt.Unchecked)
 
     def refresh_file_tree(self) -> None:
+        CONFIG.recent_files = self._get_checked(self.tree.invisibleRootItem())
         self.tree.clear()
         self.fill_tree_view(self.tree)
 
@@ -225,7 +230,19 @@ class App(QWidget):
                 count += 1
         return count != 0
 
+    def _get_checked(self, tree_item: TreeWidgetItem) -> List[Path]:
+        ret = []
+        for i in range(tree_item.childCount()):
+            item = tree_item.child(i)
+            if item.is_checked:
+                if item.path.is_file():
+                    ret.append(item.path)
+                else:
+                    ret.extend(self._get_checked(item))
+        return ret
+
     def closeEvent(self, event: QEvent) -> None:
+        CONFIG.recent_files = self._get_checked(self.tree.invisibleRootItem())
         CONFIG.dump()
         event.accept()
 
