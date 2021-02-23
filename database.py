@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List
 from typing import Union
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QTreeWidget
 from PyQt5.QtWidgets import QTreeWidgetItem
 
@@ -24,7 +25,9 @@ class Database:
         self._load_directory_recursively(root)
 
     def _load_directory_recursively(self, tree_item: TreeWidgetItem) -> None:
-        if tree_item.childCount() == 0 and tree_item.is_checked:
+        tree_item_status = tree_item.checkState(0)
+
+        if tree_item_status == Qt.Checked and tree_item.path.is_file():
             encoding = (
                 settings.UTF8_ENCODING if is_utf8(tree_item.path)
                 else settings.WINDOWS_ENCODING
