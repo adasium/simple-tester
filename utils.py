@@ -4,6 +4,7 @@ import codecs
 from pathlib import Path
 from typing import NamedTuple
 from typing import Optional
+from typing import TypedDict
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QCursor
@@ -12,7 +13,6 @@ from PyQt5.QtWidgets import QGroupBox
 from PyQt5.QtWidgets import QLayout
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtWidgets import QWidget
-from typing_extensions import TypedDict
 
 from stylesheet import GROUPBOX_CSS
 
