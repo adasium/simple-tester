@@ -22,7 +22,7 @@ class StatsWindow(QWidget):
 
         layout = QGridLayout()
         axis = pg.DateAxisItem()
-        plot = pg.PlotWidget(title="Multiple curves")
+        plot = pg.PlotWidget(title=path.name)
         plot.setAxisItems({'bottom': axis})
         plot.addLegend()
 
@@ -38,19 +38,25 @@ class StatsWindow(QWidget):
             y=[e.correct for e in entries],
             pen='g',
             name='Correct count',
+            symbol='o',
+            symbolBrush='g',
         )
         plot.plot(
             x=[e.timestamp.timestamp() for e in entries],
             y=[e.incorrect for e in entries],
             fill_level=0,
             pen='r',
+            symbol='o',
             name='Incorrect count',
+            symbolBrush='r',
         )
         plot.plot(
             x=[e.timestamp.timestamp() for e in entries],
             y=[e.total for e in entries],
             pen='y',
             name='Total count',
+            symbol='o',
+            symbolBrush='y',
         )
 
         self.show()
