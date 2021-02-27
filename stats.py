@@ -16,11 +16,11 @@ from settings import STATS_PATH
 
 @dataclass
 class Entry(JSONSerializable):
-    correct: int
-    incorrect: int
-    quiz_path: Path
-    time_total: timedelta
-    timestamp: datetime
+    correct: int = 0
+    incorrect: int = 0
+    quiz_path: Path = field(default_factory=Path)
+    time_total: timedelta = field(default_factory=timedelta)
+    timestamp: datetime = field(default_factory=datetime.now)
 
     @property
     def total(self) -> int:
@@ -40,6 +40,15 @@ class Entry(JSONSerializable):
             quiz_path,
             time_total=timedelta(days=days, seconds=seconds, microseconds=microseconds),
             timestamp=timestamp,
+        )
+
+    def __add__(self, o: Entry) -> Entry:
+        return Entry(
+            correct=self.correct + o.correct,
+            incorrect=self.correct + o.incorrect,
+            quiz_path=o.quiz_path,
+            time_total=self.time_total + o.time_total,
+            timestamp=o.timestamp,
         )
 
 

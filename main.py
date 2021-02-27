@@ -160,12 +160,12 @@ class App(QWidget):
 
     def generate_test(self) -> None:
         if not self._is_anything_checked(self.tree.invisibleRootItem()):
-            QInfoDialog(text='You have to select at least one file').exec_()
+            QInfoDialog(text='You have to select at least one file', parent=self).exec_()
             return None
 
         database = Database(self.tree)
         if len(database.questions) == 0:
-            QInfoDialog(text='No questions found in selected files').exec_()
+            QInfoDialog(text='No questions found in selected files', parent=self).exec_()
             return None
 
         order = Order.RANDOM if self.r_shuffled.isChecked() else Order.SEQUENTIAL
@@ -242,10 +242,10 @@ class App(QWidget):
 
     def show_stats(self) -> None:
         selected = self._get_checked(self.tree.invisibleRootItem())
-        if len(selected) == 1:
-            self._w = StatsWindow(selected[0])
-        else:
-            QInfoDialog(text='You have to select only one file').exec_()
+        if len(selected) == 0:
+            QInfoDialog(text='You have to select at least one file', parent=self).exec_()
+            return
+        self._w = StatsWindow(selected)
 
     def closeEvent(self, event: QEvent) -> None:
         CONFIG.recent_files = self._get_checked(self.tree.invisibleRootItem())
