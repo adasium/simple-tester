@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 from typing import Any
 from typing import Generic
@@ -23,6 +24,7 @@ from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtWidgets import QWidget
 
 from score import Score
+from utils import Timedelta
 
 
 def color_str(string, color='black'):
@@ -109,13 +111,12 @@ class QElapsedTimerWidget(QLabel):
 
     def update(self):
         if not self.stopped:
-            total_milliseconds = self._timer.elapsed()
-
-            minutes = total_milliseconds // 60000
-            seconds = (total_milliseconds - minutes*60000) // 1000
-            milliseconds = total_milliseconds - minutes*60000 - seconds*1000
-            self.setText('{}m {}s {:03d}ms'.format(minutes, seconds, milliseconds))
+            self.setText('{}m {}s {:03d}ms'.format(self.elapsed.minutes_, self.elapsed.seconds_, self.elapsed.milliseconds_))
             self._check_thread_timer.start()
+
+    @property
+    def elapsed(self) -> Timedelta:
+        return Timedelta(milliseconds=self._timer.elapsed())
 
 
 class QInfoDialog(QDialog):

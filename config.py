@@ -10,29 +10,15 @@ from typing import Dict
 from typing import List
 from typing import Optional
 from typing import overload
+from typing import Type
 
+from serializable import _jsonify
+from serializable import JSONSerializable
 from settings import CONFIG_PATH
 
 
-@overload
-def _jsonify(value: str) -> str: ...
-
-@overload
-def _jsonify(value: None) -> None: ...
-
-@overload
-def _jsonify(value: Path) -> str: ...
-
-def _jsonify(value):
-    if isinstance(value, Path):
-        return str(value)
-    if isinstance(value, list):
-        return [_jsonify(val) for val in value]
-    return value
-
-
 @dataclass
-class Config:
+class Config(JSONSerializable):
     data_path: Optional[Path] = None
     recent_files: List[Path] = field(default_factory=list)
 
@@ -42,14 +28,8 @@ class Config:
                 logging.warning('Path %s does not exist', self.data_path)
                 self.data_path = None
 
-    def to_json(self) -> Dict[str, Any]:
-        return {
-            key: _jsonify(getattr(self, key))
-            for key in self.__annotations__
-        }
-
-    @staticmethod
-    def from_json(json: Dict[str, Any]) -> Config:
+    @classmethod
+    def from_json(cls: Type[Config], json: Dict[str, Any]) -> Config:
         data_path = json.get('data_path')
         recent_files = json.get('recent_files', [])
 
@@ -57,19 +37,6 @@ class Config:
             Path(data_path) if data_path is not None else None,
             [Path(file) for file in recent_files],
         )
-
-    @staticmethod
-    def load(file_path: Path) -> Config:
-        try:
-            with open(file_path) as f:
-                return Config.from_json(json.load(f))
-        except FileNotFoundError:
-            return Config()
-
-    def dump(self) -> None:
-        with open(CONFIG_PATH, 'w') as f:
-            f.write(json.dumps(self.to_json(), indent=4, sort_keys=True))
-
 
 
 CONFIG = Config.load(CONFIG_PATH)

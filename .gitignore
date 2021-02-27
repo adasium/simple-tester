@@ -16,3 +16,4 @@ tags
 /.mypy_cache/
 
 .config.json
+.stats.json

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import codecs
+from datetime import timedelta
 from pathlib import Path
 from typing import NamedTuple
 from typing import Optional
@@ -66,3 +67,24 @@ def move_to_screen(widget, posx=0, posy=0, screen=None):
     screen_number = app.screens().index(screen)
     screen_rect = app.desktop().screenGeometry(screen_number)
     widget.move(QPoint(screen_rect.x() + posx, screen_rect.y() + posy))
+
+
+class Timedelta(timedelta):
+    @property
+    def hours_(self) -> int:
+        return self.minutes_ // 60
+
+    @property
+    def minutes_(self) -> int:
+        return self.seconds // 60
+
+    @property
+    def seconds_(self) -> int:
+        return self.seconds % 60
+
+    @property
+    def milliseconds_(self) -> int:
+        return self.microseconds // 1000
+
+    def to_timedelta(self) -> timedelta:
+        return timedelta(days=self.days, seconds=self.seconds, microseconds=self.microseconds)

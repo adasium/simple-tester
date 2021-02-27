@@ -21,6 +21,7 @@ class CouldNotLoadDatabaseException(Exception):
 class Database:
     def __init__(self, tree_widget: QTreeWidget, *args, **kwargs) -> None:
         self._questions: List[Question] = []
+        self._paths: List[Path] = []
         root = tree_widget.invisibleRootItem()
         self._load_directory_recursively(root)
 
@@ -32,6 +33,7 @@ class Database:
                 settings.UTF8_ENCODING if is_utf8(tree_item.path)
                 else settings.WINDOWS_ENCODING
             )
+            self._paths.append(tree_item.path)
             with open(tree_item.path, 'r', encoding=encoding) as f:
                 for i, line in enumerate(f):
                     try:
@@ -59,3 +61,7 @@ class Database:
     @property
     def questions(self) -> List[Question]:
         return self._questions
+
+    @property
+    def paths(self) -> List[Path]:
+        return self._paths

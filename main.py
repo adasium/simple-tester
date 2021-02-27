@@ -44,6 +44,11 @@ from database import Database
 from enums import Direction
 from enums import Order
 from quiz_window import QuizWidget
+from settings import CONFIG_PATH
+from settings import STATS_PATH
+from stats import STATS
+from stats import Stats
+from stats_window import StatsWindow
 from utils import get_active_screen
 from utils import group_widgets
 from utils import move_to_screen
@@ -91,6 +96,8 @@ class App(QWidget):
 
         b_start_test = QPushButton('Start test')
         b_start_test.clicked.connect(self.generate_test)
+        b_stats = QPushButton('Show stats')
+        b_stats.clicked.connect(self.show_stats)
 
         self.range_widget = QQuestionRange(first_label='limit', second_label='offset')
 
@@ -148,6 +155,7 @@ class App(QWidget):
             ),
         )
         right_column.addWidget(HeightFillerWidget())
+        right_column.addWidget(b_stats)
         right_column.addWidget(b_start_test)
 
         # assemble
@@ -231,18 +239,28 @@ class App(QWidget):
 
     def _get_checked(self, tree_item: TreeWidgetItem) -> List[Path]:
         ret = []
+
         for i in range(tree_item.childCount()):
             item = tree_item.child(i)
-            if item.is_checked:
-                if item.path.is_file():
+            if item.path.is_file():
+                if item.checkState(0) == Qt.Checked:
                     ret.append(item.path)
-                else:
+            else:
+                if item.checkState(0) != Qt.Unchecked:
                     ret.extend(self._get_checked(item))
         return ret
 
+    def show_stats(self) -> None:
+        selected = self._get_checked(self.tree.invisibleRootItem())
+        if len(selected) == 1:
+            self._w = StatsWindow(selected[0])
+        else:
+            QInfoDialog(text='You have to select only one file').exec_()
+
     def closeEvent(self, event: QEvent) -> None:
         CONFIG.recent_files = self._get_checked(self.tree.invisibleRootItem())
-        CONFIG.dump()
+        CONFIG.dump(CONFIG_PATH)
+        STATS.dump(STATS_PATH)
         event.accept()
 
 

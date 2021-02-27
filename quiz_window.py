@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 from typing import List
 from typing import Optional
@@ -24,6 +25,8 @@ from enums import Order
 from question import Question
 from quiz import Quiz
 from settings import DATA_PATH
+from stats import Entry
+from stats import STATS
 from utils import move_to_screen
 
 
@@ -202,3 +205,18 @@ class QuizWidget(QWidget):
 
     def perform_end_quiz_actions(self):
         self._timer.stop()
+        if len(self._database.paths) > 1:
+            return
+
+        correct = self._l_score.score.correct
+        incorrect = self._l_score.score.incorrect
+
+        STATS.add(
+            Entry(
+                correct=correct,
+                incorrect=incorrect,
+                quiz_path=self._database.paths[0],
+                time_total=self._timer.elapsed.to_timedelta(),
+                timestamp=datetime.now(),
+            ),
+        )
