@@ -3,7 +3,6 @@ from __future__ import annotations
 import codecs
 from datetime import timedelta
 from pathlib import Path
-from typing import NamedTuple
 from typing import Optional
 from typing import TypedDict
 

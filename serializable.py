@@ -6,7 +6,6 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Any
 from typing import Dict
-from typing import Generic
 from typing import overload
 from typing import Protocol
 from typing import Type

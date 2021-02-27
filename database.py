@@ -1,12 +1,9 @@
 import logging
-import os
 from pathlib import Path
 from typing import List
-from typing import Union
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QTreeWidget
-from PyQt5.QtWidgets import QTreeWidgetItem
 
 import settings
 from custom_widgets import TreeWidgetItem

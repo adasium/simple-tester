@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pyqtgraph as pg
 from PyQt5.QtWidgets import QGridLayout
-from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QWidget
 
 import settings

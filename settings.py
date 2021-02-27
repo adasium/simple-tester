@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 UTF8_ENCODING = 'utf-8'
@@ -30,6 +29,6 @@ IGNORED_LINES = [
 WINDOW_RESIZABLE = False
 
 try:
-    import local_settings
+    import local_settings  # noqa: F401
 except ImportError:
     pass

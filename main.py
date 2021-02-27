@@ -2,30 +2,22 @@
 # -*- coding: utf-8 -*-
 import os
 import signal
-from enum import Enum
 from pathlib import Path
 from stat import S_ISDIR
 from stat import S_ISREG
 from stat import ST_MODE
-from typing import Any
 from typing import List
-from typing import Optional
 from typing import Union
 
 from PyQt5.QtCore import QEvent
-from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QGridLayout
-from PyQt5.QtWidgets import QGroupBox
 from PyQt5.QtWidgets import QHBoxLayout
-from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QRadioButton
-from PyQt5.QtWidgets import QSizePolicy
 from PyQt5.QtWidgets import QStackedLayout
-from PyQt5.QtWidgets import QTreeWidget
 from PyQt5.QtWidgets import QTreeWidgetItem
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtWidgets import QWidget
@@ -47,9 +39,7 @@ from quiz_window import QuizWidget
 from settings import CONFIG_PATH
 from settings import STATS_PATH
 from stats import STATS
-from stats import Stats
 from stats_window import StatsWindow
-from utils import get_active_screen
 from utils import group_widgets
 from utils import move_to_screen
 
