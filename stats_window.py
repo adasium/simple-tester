@@ -66,13 +66,11 @@ class StatsWindow(QWidget):
         if len(STATS.entries) == 0:
             return []
 
-        entries = [
-            e for e in STATS.entries
-            if e.quiz_path in set(paths)
-        ]
-
         ret = []
-        previous, *rest = sorted(entries, key=lambda e: e.timestamp)
+        previous, *rest = sorted(
+            STATS.get_entries_for_paths(paths),
+            key=lambda e: e.timestamp,
+        )
         prev = {previous.quiz_path: previous}
         ret.append(previous)
         for entry in rest:

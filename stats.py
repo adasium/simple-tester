@@ -67,5 +67,11 @@ class Stats(JSONSerializable):
     def add(self, entry: Entry) -> None:
         self.entries.append(entry)
 
+    def get_entries_for_paths(self, paths: List[Path]) -> List[Entry]:
+        return [
+            e for e in STATS.entries
+            if e.quiz_path in set(paths)
+        ]
+
 
 STATS = Stats.load(STATS_PATH)

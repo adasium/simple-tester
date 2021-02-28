@@ -245,6 +245,10 @@ class App(QWidget):
         if len(selected) == 0:
             QInfoDialog(text='You have to select at least one file', parent=self).exec_()
             return
+        if len(STATS.get_entries_for_paths(selected)) == 0:
+            QInfoDialog(text='No data to show for selected entries', parent=self).exec_()
+            return
+
         self._w = StatsWindow(selected)
 
     def closeEvent(self, event: QEvent) -> None:
