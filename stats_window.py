@@ -34,6 +34,7 @@ class StatsWindow(QWidget):
 
         entries = self.get_entries(paths)
         timestamp_series = [e.timestamp.timestamp() for e in entries]
+        timestamp_series = [i for i, _ in enumerate(timestamp_series, start=1)]
         plot.plot(
             x=timestamp_series,
             y=[e.correct for e in entries],
