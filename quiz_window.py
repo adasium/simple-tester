@@ -136,7 +136,7 @@ class QuizWidget(QWidget):
         else:
             self._te_logs.append(color_str(settings.BAD_ANS_TEXT, settings.BAD_ANS_COLOR) + question_object.answers)
             self._l_score.add_incorrect()
-            self._mistakes.append(question_object)
+            self._mistakes.append(question_object.reversed() if self._quiz.is_question_reversed else question_object)
 
         self.update_question()
         if self._quiz.is_finished():
