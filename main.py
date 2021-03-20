@@ -134,6 +134,7 @@ class App(QWidget):
                 ValueRadioButton(Direction.RIGHT_TO_LEFT, 'right ⟶ left'),
                 ValueRadioButton(Direction.RANDOM, 'random'),
             ],
+            default=CONFIG.direction,
         )
         right_column.addWidget(
             group_widgets(
@@ -253,6 +254,7 @@ class App(QWidget):
 
     def closeEvent(self, event: QEvent) -> None:
         CONFIG.recent_files = self._get_checked(self.tree.invisibleRootItem())
+        CONFIG.direction = self._direction_radio_group.selected.value
         CONFIG.dump(CONFIG_PATH)
         STATS.dump(STATS_PATH)
         event.accept()

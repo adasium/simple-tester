@@ -3,6 +3,7 @@ from abc import ABC
 from abc import abstractmethod
 from datetime import datetime
 from datetime import timedelta
+from enum import Enum
 from pathlib import Path
 from typing import Any
 from typing import Dict
@@ -45,6 +46,8 @@ def _jsonify(value):
         return value.to_json()
     if isinstance(value, (timedelta, Timedelta)):
         return '{}:{}:{}'.format(value.days, value.seconds, value.microseconds)
+    if isinstance(value, Enum):
+        return value.value
     return value
 
 

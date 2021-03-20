@@ -217,27 +217,21 @@ class ValueRadioButton(QRadioButton, Generic[T]):
 
 
 class RadioGroupWidget(QWidget):
-    def __init__(self, widgets: List[ValueRadioButton], default: int = 0, *args, **kwargs) -> None:
+    def __init__(self, widgets: List[ValueRadioButton[T]], default: T, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self._widgets = widgets
+        self._widgets = {widget.value: widget for widget in widgets}
         self._widgets[default].setChecked(True)
-
-    def get_selected(self) -> Optional[int]:
-        for i, widget in enumerate(self._widgets):
-            if widget.isChecked():
-                return i
-        return None
 
     @property
     def selected(self) -> ValueRadioButton:
-        for i, widget in enumerate(self._widgets):
+        for widget in self._widgets.values():
             if widget.isChecked():
                 return widget
         raise ValueError('At least one radio should be selected')
 
     @property
     def widgets(self) -> List[QRadioButton]:
-        return self._widgets
+        return list(self._widgets.values())
 
 
 class Label(QLabel):
