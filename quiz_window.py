@@ -24,7 +24,7 @@ from enums import Direction
 from enums import Order
 from question import Question
 from quiz import Quiz
-from settings import DATA_PATH
+from settings import ROOT_PATH
 from stats import Entry
 from stats import STATS
 from utils import move_to_screen
@@ -147,8 +147,8 @@ class QuizWidget(QWidget):
             QInfoDialog(text='There are no errors (yet)', parent=self).exec_()
             return
         file_picker = QFileDialog(parent=self)
-        file_picker.setDirectory(str(DATA_PATH))
-        filename, filters = file_picker.getSaveFileName(parent=self, directory=str(DATA_PATH), filter='Text Files (*.txt);;Any files (*)')
+        file_picker.setDirectory(str(ROOT_PATH))
+        filename, filters = file_picker.getSaveFileName(parent=self, directory=str(ROOT_PATH), filter='Text Files (*.txt);;Any files (*)')
         if len(filename) == 0:
             return
 

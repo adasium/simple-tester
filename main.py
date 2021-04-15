@@ -60,7 +60,7 @@ class App(QWidget):
         self.setGeometry(*settings.WINDOW_GEOMETRY)
         if not settings.WINDOW_RESIZABLE:
             self.setFixedSize(self.size())
-        self.tree = TreeWidget(path=CONFIG.data_path or settings.DATA_PATH)
+        self.tree = TreeWidget(path=CONFIG.data_path or settings.ROOT_PATH)
         self.tree.headerItem().setHidden(True)
         self._no_data_path_widget = Label('Select data dir')
 

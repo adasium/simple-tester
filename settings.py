@@ -17,7 +17,6 @@ WINDOW_GEOMETRY = [
 ]
 
 ROOT_PATH = Path(__file__).parent
-DATA_PATH = ROOT_PATH.joinpath('data')
 CONFIG_PATH = ROOT_PATH.joinpath('.config.json')
 STATS_PATH = ROOT_PATH.joinpath('.stats.json')
 
