@@ -162,6 +162,7 @@ class QuizWidget(QWidget):
     def redo_test(self, questions: Optional[List[Question]]) -> None:
         try:
             questions = questions or self.__get_questions()
+            self._mistakes = []
             self._te_answer.setFocus()
             self._l_score.clear()
             self._l_score.update()
