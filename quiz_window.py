@@ -79,6 +79,7 @@ class QuizWidget(QWidget):
 
         self._b_redo_errors = QPushButton('Redo mistakes')
         self._b_redo_errors.clicked.connect(self.redo_errors)
+        self._b_redo_errors.setShortcut("Ctrl+R")
 
         # left_column
         self._te_logs.setReadOnly(True)
@@ -89,6 +90,7 @@ class QuizWidget(QWidget):
         b_submit_answer.clicked.connect(self.check_answer)
         self._b_redo_test = QPushButton('Restart')
         self._b_redo_test.clicked.connect(self.redo_test)
+        self._b_redo_test.setShortcut("Ctrl+Shift+R")
 
         # bottom
         self._progress = QProgressBar(self)
