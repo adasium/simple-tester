@@ -76,6 +76,7 @@ class QuizWidget(QWidget):
         # right_column
         self._b_save_errors = QPushButton('Save mistakes')
         self._b_save_errors.clicked.connect(self.save_errors)
+        self._b_save_errors.setShortcut("Ctrl+S")
 
         self._b_redo_errors = QPushButton('Redo mistakes')
         self._b_redo_errors.clicked.connect(self.redo_errors)
