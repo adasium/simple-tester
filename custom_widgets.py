@@ -4,6 +4,7 @@ from typing import Generic
 from typing import List
 from typing import Optional
 from typing import TypeVar
+import settings
 
 from PyQt5.QtCore import QElapsedTimer
 from PyQt5.QtCore import Qt
@@ -26,7 +27,7 @@ from score import Score
 from utils import Timedelta
 
 
-def color_str(string, color='black'):
+def color_str(string, color=settings.DEFAULT_COLOR):
     string = f'<span style="color:{color};">{string}</span>'
     return string
 
