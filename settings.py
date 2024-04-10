@@ -31,6 +31,9 @@ EXCLUDED_EXTENSIONS = ['.swp']
 IGNORED_LINES = [
     '\n',
 ]
+COMMENT_CHARS = [
+    '#',
+]
 
 WINDOW_RESIZABLE = False
 

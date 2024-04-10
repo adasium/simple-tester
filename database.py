@@ -36,6 +36,8 @@ class Database:
                     try:
                         if line in settings.IGNORED_LINES:
                             continue
+                        if line.startswith(tuple(settings.COMMENT_CHARS)):
+                            continue
                         question, answers = [
                             x.strip(' ')
                             for x in line.strip('\n').split(' - ')
